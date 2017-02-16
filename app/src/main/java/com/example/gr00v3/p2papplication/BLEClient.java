@@ -58,8 +58,6 @@ public class BLEClient {
 
         @Override
         public void onStartFailure(int errorCode) {
-            //The error code 1 indicates that advertisement data size exceeds 31 bytes which is the specified limit. Try shorter device name (4 REPORT)
-            // Error codes: https://developer.android.com/reference/android/bluetooth/le/AdvertiseCallback.html
             Log.e( "BLE", "Advertising onStartFailure: " + errorCode );
             super.onStartFailure(errorCode);
         }
@@ -135,7 +133,6 @@ public class BLEClient {
                 .build();
 
         advertiser.startAdvertising( settings, data, advertisingCallback );
-
     }
 
     public void startScan() {
