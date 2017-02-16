@@ -23,6 +23,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //UI elements
     private Button scanButton;
+    private Button advertiseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +36,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         remoteBroadcastService = new RemoteBroadcastService(this);
 
-        //Scan button
+        //Buttons
         scanButton = (Button) findViewById(R.id.scan_button);
         scanButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                remoteBroadcastService.scanForOtherBLEDevices();
+                remoteBroadcastService.scanBLE();
+            }
+        });
+
+        advertiseButton = (Button) findViewById(R.id.ad_button);
+        advertiseButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                remoteBroadcastService.advertiseBLE();
             }
         });
     }

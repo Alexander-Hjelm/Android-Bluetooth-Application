@@ -112,8 +112,11 @@ public class RemoteBroadcastService  {
         parentActivity.reDrawMarkers();
     }
 
-    public void scanForOtherBLEDevices() {
+    public void scanBLE() {
         bleClient.startScan();
+    }
+    public void advertiseBLE() {
+        bleClient.startAdvertising();
     }
 
 }
