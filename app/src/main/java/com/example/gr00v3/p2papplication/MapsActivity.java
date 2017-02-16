@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +25,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //UI elements
     private Button scanButton;
     private Button advertiseButton;
+    private TextView debugTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 remoteBroadcastService.advertiseBLE();
             }
         });
+
+        debugTextView = (TextView) findViewById(R.id.debug_text);
+        debugOnScreen("MAIN", "App Started...");
     }
 
 
@@ -113,7 +118,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
+    public void debugOnScreen(String tag, String msg) {
+        debugTextView.setText(tag + ": " + msg);
+    }
 
 
     //Sources

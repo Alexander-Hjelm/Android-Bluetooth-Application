@@ -53,14 +53,14 @@ public class BLEClient {
         @Override
         public void onStartSuccess(AdvertiseSettings settingsInEffect) {
             super.onStartSuccess(settingsInEffect);
-            Log.e( "BLE", "Advertising onStartSuccess");
+            ((MapsActivity) parentActivity).debugOnScreen("BLE", "Advertising onStartSuccess");
         }
 
         @Override
         public void onStartFailure(int errorCode) {
             //The error code 1 indicates that advertisement data size exceeds 31 bytes which is the specified limit. Try shorter device name (4 REPORT)
             // Error codes: https://developer.android.com/reference/android/bluetooth/le/AdvertiseCallback.html
-            Log.e( "BLE", "Advertising onStartFailure: " + errorCode );
+            ((MapsActivity) parentActivity).debugOnScreen("BLE", "Advertising onStartFailure, error code: " + errorCode);
             super.onStartFailure(errorCode);
         }
     };
@@ -77,19 +77,18 @@ public class BLEClient {
             StringBuilder builder = new StringBuilder( result.getDevice().getName() );
 
             builder.append("\n").append(new String(result.getScanRecord().getServiceData(result.getScanRecord().getServiceUuids().get(0)), Charset.forName("UTF-8")));
-            Log.d("BLE", "Discovery onScanResult");
-            Log.d("BLE", builder.toString());
+            ((MapsActivity) parentActivity).debugOnScreen("BLE", "Discovery onScanResult: " + builder.toString());
         }
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
             super.onBatchScanResults(results);
-            Log.d("BLE", "Discovery onBatchScanResults");
+            ((MapsActivity) parentActivity).debugOnScreen("BLE", "Discovery onBatchScanResults");
         }
 
         @Override
         public void onScanFailed(int errorCode) {
-            Log.e( "BLE", "Discovery onScanFailed: " + errorCode );
+            ((MapsActivity) parentActivity).debugOnScreen("BLE", "Discovery onScanFailed, error code: " + errorCode);
             super.onScanFailed(errorCode);
         }
 
@@ -163,7 +162,8 @@ public class BLEClient {
             @Override
             public void run() {
                 mBluetoothLeScanner.stopScan(mScanCallback);
-                Log.d("BLE", "Scan timeout");
+                ((MapsActivity) parentActivity).debugOnScreen("BLE", "Discovery scan timeout");
+
             }
         }, 10000);
 
