@@ -3,6 +3,8 @@ package com.example.gr00v3.p2papplication;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,15 +21,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private RemoteBroadcastService remoteBroadcastService;
 
+    //UI elements
+    private Button scanButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         remoteBroadcastService = new RemoteBroadcastService(this);
+
+        //Scan button
+        scanButton = (Button) findViewById(R.id.scan_button);
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                remoteBroadcastService.scanForOtherBLEDevices();
+            }
+        });
     }
 
 
@@ -90,4 +104,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .title(name));
         }
     }
+
+
+
+
+    //Sources
+    //https://developer.android.com/reference/android/widget/Button.html
+    //http://stackoverflow.com/questions/14694119/how-to-add-buttons-at-top-of-map-fragment-api-v2-layout
 }

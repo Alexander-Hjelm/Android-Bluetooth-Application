@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseData;
+import android.bluetooth.le.AdvertiseSettings;
+import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
@@ -40,6 +44,24 @@ public class BLEClient {
     private Context mContext;
     private Activity parentActivity;
 
+    private String uuid = "d5c54f8e-c7b2-430c-8044-8b7be9fb23a1";
+    //private String uuid = "d5e78474-fce9-4d8c-ac0f-8941480f9285";
+
+
+
+    private AdvertiseCallback advertisingCallback = new AdvertiseCallback() {
+        @Override
+        public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+            super.onStartSuccess(settingsInEffect);
+            Log.e( "BLE", "Advertising onStartSuccess");
+        }
+
+        @Override
+        public void onStartFailure(int errorCode) {
+            Log.e( "BLE", "Advertising onStartFailure: " + errorCode );
+            super.onStartFailure(errorCode);
+        }
+    };
 
     private ScanCallback mScanCallback = new ScanCallback() {
         @Override
@@ -53,13 +75,14 @@ public class BLEClient {
             StringBuilder builder = new StringBuilder( result.getDevice().getName() );
 
             builder.append("\n").append(new String(result.getScanRecord().getServiceData(result.getScanRecord().getServiceUuids().get(0)), Charset.forName("UTF-8")));
-
-            Log.d("DEBUG", builder.toString());
+            Log.d("BLE", "Discovery onScanResult");
+            Log.d("BLE", builder.toString());
         }
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
             super.onBatchScanResults(results);
+            Log.d("BLE", "Discovery onBatchScanResults");
         }
 
         @Override
@@ -67,6 +90,7 @@ public class BLEClient {
             Log.e( "BLE", "Discovery onScanFailed: " + errorCode );
             super.onScanFailed(errorCode);
         }
+
     };
 
     public BLEClient(Context mContext, Activity parentActivity) {
@@ -87,6 +111,28 @@ public class BLEClient {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             parentActivity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+    }
+
+    public void startAdvertising() {
+        BluetoothLeAdvertiser advertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
+
+        //Advertisement settings, ADVERTISE_MODE_LOW_POWER for low power
+        AdvertiseSettings settings = new AdvertiseSettings.Builder()
+                .setAdvertiseMode( AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY )
+                .setTxPowerLevel( AdvertiseSettings.ADVERTISE_MODE_BALANCED )
+                .setConnectable( false )
+                .build();
+
+        ParcelUuid pUuid = new ParcelUuid( UUID.fromString(this.uuid) );
+
+        //Advertisement data
+        AdvertiseData data = new AdvertiseData.Builder()
+                .setIncludeDeviceName( true )
+                .addServiceUuid( pUuid )
+                .addServiceData( pUuid, "Data".getBytes( Charset.forName( "UTF-8" ) ) )
+                .build();
+
+        advertiser.startAdvertising( settings, data, advertisingCallback );
     }
 
     public void startScan() {
@@ -114,6 +160,7 @@ public class BLEClient {
             @Override
             public void run() {
                 mBluetoothLeScanner.stopScan(mScanCallback);
+                Log.d("BLE", "Scan timeout");
             }
         }, 10000);
 

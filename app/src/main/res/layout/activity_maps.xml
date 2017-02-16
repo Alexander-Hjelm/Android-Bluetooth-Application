@@ -14,10 +14,10 @@
         tools:context="com.example.gr00v3.p2papplication.MapsActivity" />
 
     <Button
-        android:text="Button"
+        android:text="Scan 4 BLE devices"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button2" />
+        android:id="@+id/scan_button" />
 
 
 </FrameLayout>
