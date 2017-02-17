@@ -90,7 +90,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions()
                 .position(point)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.downvote))
-                .title("FUCK JEWS"));
+                .title("You pressed here"));
     }
 
     public void reDrawMarkers() {
