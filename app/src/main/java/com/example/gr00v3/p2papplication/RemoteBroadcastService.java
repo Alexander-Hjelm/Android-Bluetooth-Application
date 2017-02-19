@@ -113,7 +113,7 @@ public class RemoteBroadcastService  {
     }
 
     public void scanBLE() {
-        bleClient.startScan();
+        bleClient.scanLeDevice(true);
     }
     public void advertiseBLE() {
         bleClient.startAdvertising();
