@@ -158,12 +158,16 @@ public class BLEClient {
 
         mBluetoothAdapter.setName(android.os.Build.MODEL);
 
+        BluetoothGattServer gattServer = bluetoothManager.openGattServer(mContext, new BluetoothGattServerCallback() {
             @Override
             public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
                 super.onConnectionStateChange(device, status, newState);
             }
         });
 
+        BluetoothGattService service = new BluetoothGattService(uuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
+        BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(UUID.randomUUID(), BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ);
+        //characteristic.setValue("TESTINATED");
         service.addCharacteristic(characteristic);
         gattServer.addService(service);
 
