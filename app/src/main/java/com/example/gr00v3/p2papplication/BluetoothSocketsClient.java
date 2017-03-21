@@ -50,7 +50,10 @@ public class BluetoothSocketsClient {
 
     // Unique Identifiers for this application
     private static final String NAME = Build.MODEL;
-    private static final UUID MY_UUID = UUID.randomUUID();
+    //private static final UUID MY_UUID = UUID.randomUUID();
+    private static final UUID MY_UUID = UUID.fromString("9d36c5f7-2e54-4bed-9969-7f5100e6583d0");
+
+
     // Member fields
     private final Activity mParentActivity;
     private final Context mContext;
@@ -143,7 +146,8 @@ public class BluetoothSocketsClient {
                         // Do something once we have received a message
                         if (D) Log.d(TAG, "Reading message from socket");
                         byte[] readFromBuffer = (byte[])msg.obj;    //String is in msg.obj
-                        String msgString = readFromBuffer.toString();
+                        String msgString = new String(readFromBuffer);
+                        if (D) Log.d(TAG, "Read message: " + msgString);
                         Toast.makeText(mContext, "RECEIVED MESSAGE: " + msgString, Toast.LENGTH_SHORT   );
                         break;
                 }
@@ -344,7 +348,9 @@ public class BluetoothSocketsClient {
             BluetoothServerSocket tmp = null;
             try {
                 // MY_UUID is the app's UUID string, also used by the client code.
-                tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+                // tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+                tmp = mAdapter.listenUsingRfcommWithServiceRecord(pairedDevices.get(0).getName(), MY_UUID);
+                Log.d(TAG, MY_UUID.toString());
             } catch (IOException e) {
                 Log.e(TAG, "Socket's listen() method failed", e);
             }
@@ -367,6 +373,9 @@ public class BluetoothSocketsClient {
                     // A connection was accepted. Perform work associated with
                     // the connection in a separate thread.
                     //manageMyConnectedSocket(socket);
+                    ConnectedThread connectedThread = new ConnectedThread(socket);
+                    connectedThread.start();
+
                     if(D) Log.d(TAG, "A connection was accepted on the server thread");
                     try {
                         mmServerSocket.close();

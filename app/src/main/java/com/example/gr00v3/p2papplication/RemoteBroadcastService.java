@@ -1,6 +1,12 @@
 package com.example.gr00v3.p2papplication;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -18,17 +24,31 @@ import static android.media.CamcorderProfile.get;
 
 public class RemoteBroadcastService  {
 
+    // Debugging
+    private static final String TAG = "BluetoothChat";
+
     MapsActivity parentActivity;
-    private BLEClient bleClient;
+    //private BLEClient bleClient;
     private JSONArray poiArray = new JSONArray();
 
+    // Key names received from the BluetoothChatService Handler
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
+
+    BluetoothSocketsClient bluetoothSocketsClient;
+
+    // Name of the connected device
+    private String mConnectedDeviceName = null;
 
 
     public RemoteBroadcastService(MapsActivity activity) {
         this.parentActivity = activity;
 
         //Initialize BLE client
-        bleClient = new BLEClient(parentActivity.getApplicationContext(), parentActivity);
+        //bleClient = new BLEClient(parentActivity.getApplicationContext(), parentActivity);
+
+        //Initialize BT Sockets Client
+        bluetoothSocketsClient = new BluetoothSocketsClient(parentActivity, new Handler());
     }
 
     public JSONArray getPoiArray() {
@@ -113,10 +133,12 @@ public class RemoteBroadcastService  {
     }
 
     public void scanBLE() {
-        bleClient.scanLeDevice(true);
+        bluetoothSocketsClient.StartServerThread();
     }
     public void advertiseBLE() {
-        bleClient.startAdvertising();
+        bluetoothSocketsClient.DiscoverPairedDevices();
+        bluetoothSocketsClient.DiscoverNewDevices();
+        bluetoothSocketsClient.ConnectToPairedDevices();
     }
 
 }
