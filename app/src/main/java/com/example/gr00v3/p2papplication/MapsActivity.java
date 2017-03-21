@@ -1,5 +1,7 @@
 package com.example.gr00v3.p2papplication;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import org.json.*;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
+
+    private final static int REQUEST_ENABLE_BT = 1;
 
     private GoogleMap mMap;
     private RemoteBroadcastService remoteBroadcastService;
@@ -57,6 +61,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         debugOnScreen("MAIN", "App Started...");
     }
 
+    // Ensures Bluetooth is available on the device and it is enabled. If not,
+    // displays a dialog requesting user permission to enable Bluetooth.
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+    }
 
     /**
      * Manipulates the map once available.
