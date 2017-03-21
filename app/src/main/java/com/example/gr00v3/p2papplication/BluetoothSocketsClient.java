@@ -355,6 +355,7 @@ public class BluetoothSocketsClient {
             BluetoothSocket socket = null;
             // Keep listening until exception occurs or a socket is returned.
             while (true) {
+                if(D) Log.d(TAG, "Running server thread");
                 try {
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
@@ -366,6 +367,7 @@ public class BluetoothSocketsClient {
                     // A connection was accepted. Perform work associated with
                     // the connection in a separate thread.
                     //manageMyConnectedSocket(socket);
+                    if(D) Log.d(TAG, "A connection was accepted on the server thread");
                     try {
                         mmServerSocket.close();
                     } catch (IOException e) {
@@ -373,6 +375,7 @@ public class BluetoothSocketsClient {
                     }
                     break;
                 }
+                if(D) Log.d(TAG, "Done with server thread iteration");
             }
         }
 
