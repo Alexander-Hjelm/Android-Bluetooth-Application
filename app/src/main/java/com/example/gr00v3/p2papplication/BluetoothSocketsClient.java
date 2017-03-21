@@ -10,10 +10,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
+import java.util.Set;
 
 
 public class BluetoothSocketsClient {
@@ -38,5 +40,18 @@ public class BluetoothSocketsClient {
         //mHandler = handler;
     }
 
+    public void DiscoverDevices() {
+        // Starting the device discovery
+        if (D) Log.d(TAG, "Starting Discovery");
+        mAdapter.startDiscovery();
+        if (D) Log.d(TAG, "Discovery done");
+        // Listing paired devices
+        if (D) Log.d(TAG, "Devices paired:");
+        Set<BluetoothDevice> devices = mAdapter.getBondedDevices();
+        for (BluetoothDevice device : devices) {
+            if (D) Log.d(TAG, "Found device: " + device.getName() + " Address: " + device.getAddress());
+        }
+
+    }
 
 }
