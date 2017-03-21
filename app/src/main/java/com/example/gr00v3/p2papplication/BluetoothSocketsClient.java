@@ -184,6 +184,11 @@ public class BluetoothSocketsClient {
         }
     }
 
+    public void StartServerThread() {
+        AcceptThread acceptThread = new AcceptThread();
+        acceptThread.start();
+    }
+
     //Thread class from google api
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
