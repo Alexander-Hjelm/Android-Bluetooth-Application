@@ -399,3 +399,8 @@ public class BluetoothSocketsClient {
     }
 
 }
+
+//SOURCES
+//https://www.youtube.com/watch?v=CduipeJM3UQ&index=10&list=PLQrQKDQmvSfxEmYOugNkYLSEs5oLxs5u6
+//https://developer.android.com/guide/topics/connectivity/bluetooth.html
+//fetched (2017-03-21)
