@@ -58,6 +58,7 @@ public class BluetoothSocketsClient {
     private final BroadcastReceiver mReceiver;      //Receiver that filters and handles system messages
 
     private final Handler mHandler;
+    //private final ConnectedThread connectedThread;
 
     //External devices
     ArrayList<BluetoothDevice> pairedDevices = new ArrayList<BluetoothDevice>();
@@ -208,12 +209,15 @@ public class BluetoothSocketsClient {
             // Cancel discovery because it otherwise slows down the connection.
             mAdapter.cancelDiscovery();
 
+            if(D) Log.d(TAG, "ConnectThread.run()");
+
             try {
                 // Connect to the remote device through the socket. This call blocks
                 // until it succeeds or throws an exception.
                 mmSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and return.
+                if(D) Log.d(TAG, "Unable to connect to client socket.");
                 try {
                     mmSocket.close();
                 } catch (IOException closeException) {
@@ -225,6 +229,8 @@ public class BluetoothSocketsClient {
             // The connection attempt succeeded. Perform work associated with
             // the connection in a separate thread.
             // Send message to handler
+
+            if(D) Log.d(TAG, "Successfully connected to client socket, sending message to handler...");
             mHandler.obtainMessage(SUCCESS_CONNECT, mmSocket).sendToTarget();      //In handler: get socket with msg.obj
         }
 
