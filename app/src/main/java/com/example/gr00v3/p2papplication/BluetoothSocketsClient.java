@@ -47,6 +47,9 @@ public class BluetoothSocketsClient {
     public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_TOAST = 4;
 
+    //Client/Server threads
+    private ConnectedThread connectedThreadServer;
+    private ConnectedThread connectedThreadClient;
 
     // Unique Identifiers for this application
     private static final String NAME = Build.MODEL;
@@ -61,7 +64,6 @@ public class BluetoothSocketsClient {
     private final BroadcastReceiver mReceiver;      //Receiver that filters and handles system messages
 
     private final Handler mHandler;
-    //private final ConnectedThread connectedThread;
 
     //External devices
     ArrayList<BluetoothDevice> pairedDevices = new ArrayList<BluetoothDevice>();
@@ -134,12 +136,12 @@ public class BluetoothSocketsClient {
                 switch (msg.what) {
                     case SUCCESS_CONNECT:
                         // Do something once we hae successfully connected to a device
-                        ConnectedThread connectedThread = new ConnectedThread((BluetoothSocket) msg.obj);
+                        connectedThreadClient = new ConnectedThread((BluetoothSocket) msg.obj);
                         Toast.makeText(mContext, "Successfully connected to a Bluetooth device", Toast.LENGTH_SHORT).show();
 
                         //Write to socket
                         if (D) Log.d(TAG, "Writing to socket");
-                        connectedThread.write("HI FANDANGO".getBytes());
+                        connectedThreadClient.write("HI FANDANGO".getBytes());
 
                         break;
                     case MESSAGE_READ:
@@ -373,8 +375,8 @@ public class BluetoothSocketsClient {
                     // A connection was accepted. Perform work associated with
                     // the connection in a separate thread.
                     //manageMyConnectedSocket(socket);
-                    ConnectedThread connectedThread = new ConnectedThread(socket);
-                    connectedThread.start();
+                    connectedThreadServer = new ConnectedThread(socket);
+                    connectedThreadServer.start();
 
                     if(D) Log.d(TAG, "A connection was accepted on the server thread");
                     try {
