@@ -132,19 +132,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         // Get pois from google maps API
-        JSONArray newPoiArray = remoteBroadcastService.retrievePoisFromGoogleMaps(point);
-        remoteBroadcastService.updateInternalPois(newPoiArray);
-
-        //Build POI request
-        JSONObject poiRequestObj = new JSONObject();
-        try {
-            //TODO: add longlat and query type
-            poiRequestObj.put("radius", radius);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (queryPlacesAPI) {
+            JSONArray newPoiArray = remoteBroadcastService.retrievePoisFromGoogleMaps(point);
+            remoteBroadcastService.updateInternalPois(newPoiArray);
         }
-        remoteBroadcastService.writeBT(poiRequestObj, RemoteBroadcastService.MessageType.POIREQUEST,
-                BluetoothSocketsClient.ConnectionType.CLIENT);
+
+        // Get pois from bluetooth client
+        if (queryP2P) {
+            //Build POI request
+            JSONObject poiRequestObj = new JSONObject();
+            try {
+                //TODO: add longlat and query type
+                poiRequestObj.put("radius", radius);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            remoteBroadcastService.writeBT(poiRequestObj, RemoteBroadcastService.MessageType.POIREQUEST,
+                    BluetoothSocketsClient.ConnectionType.CLIENT);
+        }
 
         mMap.addMarker(new MarkerOptions()
                 .position(point)
