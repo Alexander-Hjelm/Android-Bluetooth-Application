@@ -148,7 +148,7 @@ public class BluetoothSocketsClient {
                         byte[] readFromBuffer = (byte[])msg.obj;    //String is in msg.obj
                         String msgString = new String(readFromBuffer);
                         if (D) Log.d(TAG, "Read message: " + msgString);
-                        Toast.makeText(mContext, "RECEIVED MESSAGE: " + msgString, Toast.LENGTH_SHORT   );
+                        Toast.makeText(mContext, "RECEIVED MESSAGE: " + msgString, Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
