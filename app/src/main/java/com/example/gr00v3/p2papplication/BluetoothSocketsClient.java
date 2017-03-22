@@ -414,7 +414,7 @@ public class BluetoothSocketsClient {
         }
     }
 
-    private static enum ConnectionType {
+    public static enum ConnectionType {
         SERVER,
         CLIENT
     }
