@@ -52,6 +52,9 @@ public class BluetoothSocketsClient {
     private ConnectedThread connectedThreadServer;
     private ConnectedThread connectedThreadClient;
 
+    //Client connection thread
+    private ConnectThread connectThreadClient;
+
     // Unique Identifiers for this application
     private static final String NAME = Build.MODEL;
     //private static final UUID MY_UUID = UUID.randomUUID();
@@ -139,7 +142,7 @@ public class BluetoothSocketsClient {
                 switch (msg.what) {
                     case SUCCESS_CONNECT:
                         // Do something once we hae successfully connected to a device
-                        connectedThreadClient = new ConnectedThread((BluetoothSocket) msg.obj);
+
                         Toast.makeText(mContext, "Successfully connected to a Bluetooth device", Toast.LENGTH_SHORT).show();
 
                         //Write to socket
@@ -188,8 +191,8 @@ public class BluetoothSocketsClient {
     public void ConnectToPairedDevices() {
         for (BluetoothDevice device: pairedDevices) {
             if (D) Log.d(TAG, "Connecting to device: " + device.getName() + "@" + device.getAddress());
-            ConnectThread connectThread = new ConnectThread(device);
-            connectThread.start();
+            connectThreadClient = new ConnectThread(device);
+            connectThreadClient.start();
         }
     }
 
