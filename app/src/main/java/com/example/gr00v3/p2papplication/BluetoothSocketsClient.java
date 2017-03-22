@@ -248,6 +248,8 @@ public class BluetoothSocketsClient {
             // Send message to handler
 
             if(D) Log.d(TAG, "Successfully connected to client socket, sending message to handler...");
+            connectedThreadClient = new ConnectedThread(mmSocket);
+            connectedThreadClient.start();
             mHandler.obtainMessage(SUCCESS_CONNECT, mmSocket).sendToTarget();      //In handler: get socket with msg.obj
         }
 
@@ -412,6 +414,19 @@ public class BluetoothSocketsClient {
                 connectedThreadServer.write(str.getBytes());
                 break;
             case CLIENT:
+                if(connectedThreadClient == null) {
+                    DiscoverPairedDevices();
+                    DiscoverNewDevices();
+                    ConnectToPairedDevices();
+                }
+
+                //Wait for connectThread to finish
+                try {
+                    connectThreadClient.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 connectedThreadClient.write(str.getBytes());
                 break;
         }
