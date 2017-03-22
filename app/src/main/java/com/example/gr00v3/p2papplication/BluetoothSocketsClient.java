@@ -146,8 +146,8 @@ public class BluetoothSocketsClient {
                         Toast.makeText(mContext, "Successfully connected to a Bluetooth device", Toast.LENGTH_SHORT).show();
 
                         //Write to socket
-                        if (D) Log.d(TAG, "Writing to socket");
-                        connectedThreadClient.write("HI FANDANGO".getBytes());
+                        //if (D) Log.d(TAG, "Writing to socket");
+                        //connectedThreadClient.write("HI FANDANGO".getBytes());
 
                         break;
                     case MESSAGE_READ:
