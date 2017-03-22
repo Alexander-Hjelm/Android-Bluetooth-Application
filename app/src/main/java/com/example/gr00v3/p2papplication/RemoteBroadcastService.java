@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
+import static android.R.attr.value;
 import static android.media.CamcorderProfile.get;
 
 /**
@@ -143,8 +144,49 @@ public class RemoteBroadcastService  {
         bluetoothSocketsClient.ConnectToPairedDevices();
     }
 
+    //Handling of incoming messages over BT
     public void handleMessage(String msg) {
-        Toast.makeText(parentActivity.getApplicationContext(), "RECEIVED MESSAGE: " + msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(parentActivity.getApplicationContext(), "RECEIVED MESSAGE: " + msg, Toast.LENGTH_LONG).show();
+        JSONObject MsgJson = null;
+        String type = "";
+        try {
+            MsgJson = new JSONObject(msg);
+            type = MsgJson.getString("type");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        switch(type) {
+            case "POIREQUEST":
+                break;
+            case "POIRESPONSE":
+                break;
+            case "KEYREQUEST":
+                break;
+            case "KEYRESPONSE":
+                break;
+        }
+
     }
+
+    //Write a JSON-object over the bluetooth-connection.
+    public void writeBT(JSONObject msg, MessageType msgType, BluetoothSocketsClient.ConnectionType connType) {
+        JSONObject out = new JSONObject();
+        try {
+            out.put("type", msgType.name());
+            out.put("value", msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        bluetoothSocketsClient.write(out.toString(), connType);
+    }
+
+    public static enum MessageType {
+        POIREQUEST,
+        POIRESPONSE,
+        KEYREQUEST,
+        KEYRESPONSE
+    }
+
 }
 
