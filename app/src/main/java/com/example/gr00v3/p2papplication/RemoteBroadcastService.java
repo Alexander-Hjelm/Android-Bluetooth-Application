@@ -146,6 +146,7 @@ public class RemoteBroadcastService  {
 
     //Handling of incoming messages over BT
     public void handleMessage(String msg) {
+        Log.d("RemoteBroadcastService", "Received message over BT: " + msg);
         Toast.makeText(parentActivity.getApplicationContext(), "RECEIVED MESSAGE: " + msg, Toast.LENGTH_LONG).show();
         JSONObject MsgJson = null;
         String type = "";
@@ -185,7 +186,7 @@ public class RemoteBroadcastService  {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        Log.d("RemoteBroadcastService", "Sending message over BT: " + out.toString());
         bluetoothSocketsClient.write(out.toString(), connType);
     }
 
