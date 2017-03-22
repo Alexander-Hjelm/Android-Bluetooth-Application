@@ -298,6 +298,7 @@ public class BluetoothSocketsClient {
             // Keep listening to the InputStream until an exception occurs.
             while (true) {
                 try {
+                    Log.d(TAG, "LISTENING 4 INCOMING MESSAGES");
                     mmBuffer = new byte[1024];  //Clear buffer
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
