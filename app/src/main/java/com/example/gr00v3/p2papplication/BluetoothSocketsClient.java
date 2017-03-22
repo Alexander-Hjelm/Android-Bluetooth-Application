@@ -31,6 +31,7 @@ import java.util.UUID;
 import java.util.Set;
 
 import static android.R.id.list;
+import static android.R.id.switch_widget;
 import static android.os.Build.VERSION_CODES.M;
 
 
@@ -59,6 +60,7 @@ public class BluetoothSocketsClient {
 
     // Member fields
     private final Activity mParentActivity;
+    private final RemoteBroadcastService mRemoteBroadcastService;
     private final Context mContext;
     private final BluetoothAdapter mAdapter;
     private final BroadcastReceiver mReceiver;      //Receiver that filters and handles system messages
@@ -74,8 +76,9 @@ public class BluetoothSocketsClient {
      * @param parentActivity  The parent activity
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    public BluetoothSocketsClient(final Activity parentActivity, Handler handler) {
+    public BluetoothSocketsClient(final Activity parentActivity, RemoteBroadcastService remoteBroadcastService, Handler handler) {
         mParentActivity = parentActivity;
+        mRemoteBroadcastService = remoteBroadcastService;
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mContext = parentActivity.getApplicationContext();
         //mHandler = handler;
@@ -150,7 +153,7 @@ public class BluetoothSocketsClient {
                         byte[] readFromBuffer = (byte[])msg.obj;    //String is in msg.obj
                         String msgString = new String(readFromBuffer);
                         if (D) Log.d(TAG, "Read message: " + msgString);
-                        Toast.makeText(mContext, "RECEIVED MESSAGE: " + msgString, Toast.LENGTH_SHORT).show();
+                        mRemoteBroadcastService.handleMessage(msgString);
                         break;
                 }
             }
@@ -400,7 +403,23 @@ public class BluetoothSocketsClient {
         }
     }
 
+    public void write(String str, ConnectionType type) {
+        switch(type) {
+            case SERVER:
+                connectedThreadServer.write(str.getBytes());
+                break;
+            case CLIENT:
+                connectedThreadClient.write(str.getBytes());
+                break;
+        }
+    }
+
+    private static enum ConnectionType {
+        SERVER,
+        CLIENT
+    }
 }
+
 
 //SOURCES
 //https://www.youtube.com/watch?v=CduipeJM3UQ&index=10&list=PLQrQKDQmvSfxEmYOugNkYLSEs5oLxs5u6

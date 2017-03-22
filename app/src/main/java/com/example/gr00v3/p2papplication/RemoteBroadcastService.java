@@ -48,7 +48,7 @@ public class RemoteBroadcastService  {
         //bleClient = new BLEClient(parentActivity.getApplicationContext(), parentActivity);
 
         //Initialize BT Sockets Client
-        bluetoothSocketsClient = new BluetoothSocketsClient(parentActivity, new Handler());
+        bluetoothSocketsClient = new BluetoothSocketsClient(parentActivity, this, new Handler());
     }
 
     public JSONArray getPoiArray() {
@@ -143,5 +143,8 @@ public class RemoteBroadcastService  {
         bluetoothSocketsClient.ConnectToPairedDevices();
     }
 
+    public void handleMessage(String msg) {
+        Toast.makeText(parentActivity.getApplicationContext(), "RECEIVED MESSAGE: " + msg, Toast.LENGTH_SHORT).show();
+    }
 }
 
