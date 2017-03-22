@@ -125,7 +125,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             radius = Integer.parseInt(radiusEditText.getText().toString());
         } catch (NumberFormatException e){
-            Toast.makeText(getApplicationContext(), "Radius must be an integer value", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Radius must be an integer value",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -134,6 +135,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         JSONArray newPoiArray = remoteBroadcastService.retrievePoisFromGoogleMaps(point);
         remoteBroadcastService.updateInternalPois(newPoiArray);
 
+        //Build POI request
+        JSONObject poiRequestObj = new JSONObject();
+        remoteBroadcastService.writeBT(poiRequestObj, RemoteBroadcastService.MessageType.POIREQUEST,
+                BluetoothSocketsClient.ConnectionType.CLIENT);
 
         mMap.addMarker(new MarkerOptions()
                 .position(point)
