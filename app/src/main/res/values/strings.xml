@@ -2,4 +2,9 @@
     <string name="app_name">P2P Application</string>
     <string name="title_activity_maps">Map</string>
     <string name="ble_uuid">00001802-0000-1000-8000-00805f9b34fb</string>
+
+    <string-array name="type_array">
+        <item>Restaurant</item>
+        <item>Hotel</item>
+    </string-array>
 </resources>

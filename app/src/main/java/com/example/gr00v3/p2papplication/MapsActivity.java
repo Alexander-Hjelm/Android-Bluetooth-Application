@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,9 +30,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private RemoteBroadcastService remoteBroadcastService;
 
     //UI elements
-    private Button scanButton;
-    private Button advertiseButton;
+    private Button startServerButton;
+    private Button stopServerButton;
     private TextView debugTextView;
+    private CheckBox placesAPICheckbox;
+    private CheckBox p2pCheckbox;
+    private CheckBox internalCheckbox;
+    private EditText radiusEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,20 +49,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         remoteBroadcastService = new RemoteBroadcastService(this);
 
-        //Buttons
-        scanButton = (Button) findViewById(R.id.scan_button);
-        scanButton.setOnClickListener(new View.OnClickListener() {
+        //UI Element references
+        startServerButton = (Button) findViewById(R.id.server_start_button);
+        startServerButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                remoteBroadcastService.scanBLE();
+                remoteBroadcastService.startBTServer();
             }
         });
 
-        advertiseButton = (Button) findViewById(R.id.ad_button);
-        advertiseButton.setOnClickListener(new View.OnClickListener() {
+        stopServerButton = (Button) findViewById(R.id.server_stop_button);
+        stopServerButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                remoteBroadcastService.advertiseBLE();
+                remoteBroadcastService.stopBTServer();
             }
         });
+
+        placesAPICheckbox = (CheckBox) findViewById(R.id.places_api_checkbox);
+        p2pCheckbox = (CheckBox) findViewById(R.id.p_to_p_checkbox);
+        internalCheckbox = (CheckBox) findViewById(R.id.internal_checkbox);
+
+        radiusEditText = (EditText) findViewById(R.id.radius_edit_text);
 
         debugTextView = (TextView) findViewById(R.id.debug_text);
         debugOnScreen("MAIN", "App Started...");
@@ -103,6 +115,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapLongClick(LatLng point) {
         // case: internal, other units, google maps API
+
+        //Get query parameters from UI components
+        boolean queryPlacesAPI = placesAPICheckbox.isChecked();
+        boolean queryP2P = p2pCheckbox.isChecked();
+        boolean queryInternal = internalCheckbox.isChecked();
+        int radius = 0;
+
+        try {
+            radius = Integer.parseInt(radiusEditText.getText().toString());
+        } catch (NumberFormatException e){
+            Toast.makeText(getApplicationContext(), "Radius must be an integer value", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         // Get pois from google maps API
         JSONArray newPoiArray = remoteBroadcastService.retrievePoisFromGoogleMaps(point);

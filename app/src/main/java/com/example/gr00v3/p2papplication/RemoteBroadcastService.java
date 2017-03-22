@@ -132,10 +132,12 @@ public class RemoteBroadcastService  {
         parentActivity.reDrawMarkers();
     }
 
-    public void scanBLE() {
+    public void startBTServer() {
+        bluetoothSocketsClient.DiscoverPairedDevices();
+        bluetoothSocketsClient.DiscoverNewDevices();
         bluetoothSocketsClient.StartServerThread();
     }
-    public void advertiseBLE() {
+    public void stopBTServer() {
         bluetoothSocketsClient.DiscoverPairedDevices();
         bluetoothSocketsClient.DiscoverNewDevices();
         bluetoothSocketsClient.ConnectToPairedDevices();

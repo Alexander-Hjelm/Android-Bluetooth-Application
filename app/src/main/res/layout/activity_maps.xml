@@ -10,28 +10,90 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="530dp"
+        android:layout_height="500dp"
         tools:context="com.example.gr00v3.p2papplication.MapsActivity" />
 
     <Button
-        android:text="Scan (BLE)"
+        android:text="Start BT sockets server"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/scan_button" />
+        android:id="@+id/server_start_button" />
 
     <Button
-        android:text="Advertise (BLE)"
+        android:text="Stop BT sockets server"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:id="@+id/ad_button" />
+        android:id="@+id/server_stop_button" />
 
     <TextView
-        android:text="TextView"
-        android:layout_marginTop="530dp"
+        android:id="@+id/debug_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/debug_text" />
+        android:layout_marginTop="530dp"
+        android:text="TextView"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/radius_text_view"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="506dp"
+        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
+        android:text="Radius (m):" />
+
+    <EditText
+        android:id="@+id/radius_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="500dp"
+        android:layout_marginLeft="83dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="100"
+        android:textSize="14sp" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_marginTop="540dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/type_array" />
+
+    <TextView
+        android:id="@+id/query_text_view"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="576dp"
+        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
+        android:text="Query:" />
+
+    <CheckBox
+        android:id="@+id/places_api_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="54dp"
+        android:layout_marginTop="570dp"
+        android:checked="true"
+        android:text="Places API" />
+
+    <CheckBox
+        android:id="@+id/p_to_p_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="160dp"
+        android:layout_marginTop="570dp"
+        android:checked="true"
+        android:text="P2P" />
+
+    <CheckBox
+        android:id="@+id/internal_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="220dp"
+        android:layout_marginTop="570dp"
+        android:checked="true"
+        android:text="Internal" />
 
 
 </FrameLayout>
