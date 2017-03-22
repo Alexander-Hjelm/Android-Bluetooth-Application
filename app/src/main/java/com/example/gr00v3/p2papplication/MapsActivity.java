@@ -137,6 +137,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Build POI request
         JSONObject poiRequestObj = new JSONObject();
+        try {
+            //TODO: add longlat and query type
+            poiRequestObj.put("radius", radius);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         remoteBroadcastService.writeBT(poiRequestObj, RemoteBroadcastService.MessageType.POIREQUEST,
                 BluetoothSocketsClient.ConnectionType.CLIENT);
 
