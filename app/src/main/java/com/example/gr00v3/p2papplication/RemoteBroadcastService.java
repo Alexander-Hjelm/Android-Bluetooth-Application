@@ -157,6 +157,14 @@ public class RemoteBroadcastService  {
         }
         switch(type) {
             case "POIREQUEST":
+                JSONObject outObj = new JSONObject();
+                try {
+                    outObj.put("poiArray", poiArray);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                writeBT(outObj, MessageType.POIRESPONSE,
+                        BluetoothSocketsClient.ConnectionType.SERVER);
                 break;
             case "POIRESPONSE":
                 break;
