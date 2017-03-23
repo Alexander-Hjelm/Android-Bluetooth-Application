@@ -22,6 +22,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -300,24 +303,37 @@ public class BluetoothSocketsClient {
         public void run() {
 
             int numBytes; // bytes returned from read()
+            String outMsg = "";
 
             // Keep listening to the InputStream until an exception occurs.
             while (true) {
+
                 try {
                     Log.d(TAG, "LISTENING 4 INCOMING MESSAGES");
                     mmBuffer = new byte[1024];  //Clear buffer
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
                     // Send the obtained bytes to the UI activity.
-                    Message readMsg = mHandler.obtainMessage(
-                            MESSAGE_READ, numBytes, -1,
-                            mmBuffer);
-                    readMsg.sendToTarget();
+
+                    outMsg = outMsg.concat(new String(mmBuffer, "UTF-8"));
 
                 } catch (IOException e) {
                     Log.d(TAG, "Input stream was disconnected", e);
                     break;
                 }
+
+                //Test if the message is a whole JSON-object
+                try {
+                    JSONObject test = new JSONObject(outMsg);
+                } catch (JSONException e) {
+                    continue;
+                }
+                Message readMsg = mHandler.obtainMessage(
+                        MESSAGE_READ, outMsg.getBytes().length, -1,
+                        outMsg.getBytes());
+                readMsg.sendToTarget();
+                outMsg = "";
+
             }
         }
 
