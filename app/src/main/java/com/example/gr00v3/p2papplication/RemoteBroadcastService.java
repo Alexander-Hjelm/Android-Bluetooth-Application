@@ -197,7 +197,8 @@ public class RemoteBroadcastService  {
                     }
 
                     // Check distance
-                    if (Math.sqrt(Math.pow(latComp - lat, 2) + Math.pow(lngComp - lng, 2)) > radius) {
+                    final double RAD = 0.000008998719243599958;
+                    if (Math.sqrt(Math.pow(latComp - lat, 2) + Math.pow(lngComp - lng, 2)) / RAD > radius) {
                         continue;
                     }
 

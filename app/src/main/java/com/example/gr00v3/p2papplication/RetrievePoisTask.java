@@ -86,7 +86,6 @@ class RetrievePoisTask extends AsyncTask<LatLng, Void, String> {
                 radius +
                 "&type=" +
                 type +
-                //"&keyword=shalom" +
                 "&key=" +
                 apiKey;
         return urlStr;

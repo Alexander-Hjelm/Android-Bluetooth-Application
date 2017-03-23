@@ -4,7 +4,12 @@
     <string name="ble_uuid">00001802-0000-1000-8000-00805f9b34fb</string>
 
     <string-array name="type_array">
-        <item>Restaurant</item>
-        <item>Hotel</item>
+        <item>restaurant</item>
+        <item>food</item>
+        <item>lodging</item>
+        <item>bar</item>
+        <item>spa</item>
+        <item>store</item>
+        <item>cafe</item>
     </string-array>
 </resources>
