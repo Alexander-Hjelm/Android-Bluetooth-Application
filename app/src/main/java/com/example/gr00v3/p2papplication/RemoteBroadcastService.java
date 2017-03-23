@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
+import static android.R.attr.radius;
 import static android.R.attr.value;
 import static android.R.attr.x;
 import static android.media.CamcorderProfile.get;
@@ -160,8 +161,62 @@ public class RemoteBroadcastService  {
         switch(type) {
             case "POIREQUEST":
                 JSONObject outObj = new JSONObject();
+
+                //Get query params
+                double radius = 0;
+                String poiType = "";
+                double lng = 0;
+                double lat = 0;
                 try {
-                    outObj.put("poiArray", poiArray);
+                    JSONObject value = MsgJson.getJSONObject("value");
+                    radius = value.getDouble("radius");
+                    poiType = value.getString("poiType");
+                    lng = value.getDouble("lng");
+                    lat = value.getDouble("lat");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                JSONArray outArray = new JSONArray();
+
+                //Iterate over all JSON-objects in JSONArray and filter, using query parameters
+                for (int i = 0; i < poiArray.length(); i++) {
+                    double latComp = 0;
+                    double lngComp = 0;
+                    JSONArray typesComp = new JSONArray();
+
+                    JSONObject poi = null;
+                    try {
+                        poi = poiArray.getJSONObject(i);
+
+                        latComp = poi.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+                        lngComp = poi.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+                        typesComp = poi.getJSONArray("types");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Check distance
+                    if (Math.sqrt(Math.pow(latComp - lat, 2) + Math.pow(lngComp - lng, 2)) > radius) {
+                        continue;
+                    }
+
+                    // Check type
+                    for (int j = 0; j < typesComp.length(); j++) {
+                        String poiTypeComp = null;
+                        try {
+                            poiTypeComp = typesComp.getString(j);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (poiTypeComp.equals(poiType)) {
+                            outArray.put(poi);
+                        }
+                    }
+                }
+
+                try {
+                    outObj.put("poiArray", outArray);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
