@@ -2,6 +2,7 @@ package com.example.gr00v3.p2papplication;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ResourceCursorTreeAdapter;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -19,12 +20,18 @@ import java.net.URL;
 
 class RetrievePoisTask extends AsyncTask<LatLng, Void, String> {
 
-    private double radius = 500;				//radius in m
-    private String type = "restaurant";
+    private final double radius;				//radius in m
+    private final String type;
     //List of supported types: https://developers.google.com/places/web-service/supported_types
 
     private final String apiKey = "AIzaSyAgtJjop4Q2hbatmf9gncbcdkolZHos30c";
     private final String USER_AGENT = "Mozilla/5.0";
+
+    public RetrievePoisTask(double radius, String type) {
+        super();
+        this.radius = radius;
+        this.type = type;
+    }
 
     protected String doInBackground(LatLng... points) {
         //Instantiates an http-client and retrieves pois near point

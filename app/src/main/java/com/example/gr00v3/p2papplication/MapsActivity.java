@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private CheckBox p2pCheckbox;
     private CheckBox internalCheckbox;
     private EditText radiusEditText;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placesAPICheckbox = (CheckBox) findViewById(R.id.places_api_checkbox);
         p2pCheckbox = (CheckBox) findViewById(R.id.p_to_p_checkbox);
         internalCheckbox = (CheckBox) findViewById(R.id.internal_checkbox);
+
+        spinner = (Spinner) findViewById(R.id.spinner);
 
         radiusEditText = (EditText) findViewById(R.id.radius_edit_text);
 
@@ -120,6 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         boolean queryPlacesAPI = placesAPICheckbox.isChecked();
         boolean queryP2P = p2pCheckbox.isChecked();
         boolean queryInternal = internalCheckbox.isChecked();
+        String poiType = spinner.getSelectedItem().toString();
         int radius = 0;
 
         try {
@@ -133,7 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Get pois from google maps API
         if (queryPlacesAPI) {
-            JSONArray newPoiArray = remoteBroadcastService.retrievePoisFromGoogleMaps(point);
+            JSONArray newPoiArray = remoteBroadcastService.retrievePoisFromGoogleMaps(point, radius, poiType);
             remoteBroadcastService.updateInternalPois(newPoiArray);
         }
 
@@ -144,6 +149,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             try {
                 //TODO: add longlat and query type
                 poiRequestObj.put("radius", radius);
+                poiRequestObj.put("poiType", poiType);
+                poiRequestObj.put("lat", point.latitude);
+                poiRequestObj.put("lng", point.longitude);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -57,11 +57,11 @@ public class RemoteBroadcastService  {
         return poiArray;
     }
 
-    public JSONArray retrievePoisFromGoogleMaps(LatLng point) {
+    public JSONArray retrievePoisFromGoogleMaps(LatLng point, int radius, String type) {
         String jsonOut = "";
         try {
             LatLng[] pointsArray = {point};
-            jsonOut = new RetrievePoisTask().execute(pointsArray).get();
+            jsonOut = new RetrievePoisTask(radius, type).execute(pointsArray).get();
 
         }
         catch (InterruptedException | ExecutionException e) {
