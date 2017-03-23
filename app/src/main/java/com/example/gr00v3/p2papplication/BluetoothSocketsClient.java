@@ -25,6 +25,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -154,7 +155,12 @@ public class BluetoothSocketsClient {
                         // Do something once we have received a message
                         if (D) Log.d(TAG, "Reading message from socket");
                         byte[] readFromBuffer = (byte[])msg.obj;    //String is in msg.obj
-                        String msgString = new String(readFromBuffer);
+                        String msgString = null;
+                        try {
+                            msgString = new String(readFromBuffer, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                         if (D) Log.d(TAG, "Read message: " + msgString);
                         mRemoteBroadcastService.handleMessage(msgString);
                         break;

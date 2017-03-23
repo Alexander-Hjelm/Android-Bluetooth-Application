@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutionException;
 
 import static android.R.attr.value;
+import static android.R.attr.x;
 import static android.media.CamcorderProfile.get;
 
 /**
@@ -168,6 +169,13 @@ public class RemoteBroadcastService  {
                         BluetoothSocketsClient.ConnectionType.SERVER);
                 break;
             case "POIRESPONSE":
+                JSONArray newPoiArray = new JSONArray();
+                try {
+                    newPoiArray = MsgJson.getJSONObject("value").getJSONArray("poiArray");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                updateInternalPois(newPoiArray);
                 break;
             case "KEYREQUEST":
                 break;
