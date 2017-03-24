@@ -20,22 +20,14 @@ import org.spongycastle.asn1.cms.EnvelopedData;
 
 public class RSAEncryption {
 
-	String pubKeyAFileName = "keys/pub/akey.pub";
-	String pubKeyBFileName = "keys/pub/bkey.pub";
-	String privKeyAFileName = "keys/priv/akey.pem";
-	String privKeyBFileName = "keys/priv/bkey.pem";
-	String certAFileName = "keys/cert/acert.crt";
-	String certBFileName = "keys/cert/bcert.crt";
+	String pubKeyFileName = "keys/pub/key.pub";
+	String privKeyFileName = "keys/priv/key.pem";
+	String certFileName = "keys/cert/cert.crt";
+	String pubKeyFileNameDER = "keys/pub_der_format/pub.der";
 	
-	String pubKeyAFileNameDER = "keys/pub_der_format/apub.der";
-	String pubKeyBFileNameDER = "keys/pub_der_format/bpub.der";
-	
-	PublicKey pubKeyA;
-	PublicKey pubKeyB;
-	PrivateKey privKeyA;
-	PrivateKey privKeyB;
-	Certificate certA;
-	Certificate certB;
+	PublicKey pubKey;
+	PrivateKey privKey;
+	Certificate cert;
 
 	private final File storageDirectory;
 	
@@ -44,14 +36,11 @@ public class RSAEncryption {
 
 		storageDirectory = Environment.getExternalStorageDirectory();
 
-		privKeyA = getPrivKeyFromFile("keys/priv_pkcs8_format/akey_pkcs8.der");
-		privKeyB = getPrivKeyFromFile("keys/priv_pkcs8_format/bkey_pkcs8.der");
+		privKey = getPrivKeyFromFile("keys/priv_pkcs8_format/key_pkcs8.der");
 		
-		pubKeyA = getPubKeyFromFile("keys/pub_der_format/apub.der");
-		pubKeyB = getPubKeyFromFile("keys/pub_der_format/bpub.der");
+		pubKey = getPubKeyFromFile("keys/pub_der_format/pub.der");
 		
-		certA = getCertificateFromFile(certAFileName);
-		certB = getCertificateFromFile(certBFileName);
+		cert = getCertificateFromFile(certFileName);
 		
 		//Encryption		
 		String text = "Television Rules The Nation";
@@ -60,7 +49,7 @@ public class RSAEncryption {
 		
 		//Encrypt text
 		try {
-			encryptedText = RSAEncryptUtil.encrypt(text, pubKeyA);
+			encryptedText = RSAEncryptUtil.encrypt(text, pubKey);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -69,7 +58,7 @@ public class RSAEncryption {
 		
 		//Decrypt text
 		try {
-			decryptedText = RSAEncryptUtil.decrypt(encryptedText, privKeyA);
+			decryptedText = RSAEncryptUtil.decrypt(encryptedText, privKey);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
