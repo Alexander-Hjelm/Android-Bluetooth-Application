@@ -14,12 +14,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.PublicKey;
 import java.util.concurrent.ExecutionException;
 
 import static android.R.attr.radius;
 import static android.R.attr.value;
 import static android.R.attr.x;
 import static android.media.CamcorderProfile.get;
+import static org.spongycastle.asn1.pkcs.PKCSObjectIdentifiers.rsaEncryption;
 
 /**
  * Created by Gr00v3 on 02/04/2017.
@@ -43,6 +45,9 @@ public class RemoteBroadcastService  {
     // Name of the connected device
     private String mConnectedDeviceName = null;
 
+    // Pubkey of BT receiver
+    private PublicKey pubKeyThis;
+    private PublicKey pubKeyReceiver;
 
     public RemoteBroadcastService(MapsActivity activity) {
         this.parentActivity = activity;

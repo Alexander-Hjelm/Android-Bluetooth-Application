@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.Set;
@@ -457,6 +458,10 @@ public class BluetoothSocketsClient {
                 break;
         }
     }
+
+    public PublicKey getMyPubKey() {
+        return rsaEncryption.getPubKey();
+    };
 
     public static enum ConnectionType {
         SERVER,
