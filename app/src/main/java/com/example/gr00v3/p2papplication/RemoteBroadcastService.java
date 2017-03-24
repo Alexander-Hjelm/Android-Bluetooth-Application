@@ -207,6 +207,28 @@ public class RemoteBroadcastService  {
 
     //Write a JSON-object over the bluetooth-connection.
     public void writeBT(JSONObject msg, MessageType msgType, BluetoothSocketsClient.ConnectionType connType) {
+
+        //Send key request if key not already stored
+        if (pubKeyReceiver == null) {
+            JSONObject keyRequest = new JSONObject();
+            try {
+                keyRequest.put("type", RemoteBroadcastService.MessageType.KEYREQUEST.name());
+                keyRequest.put("value", bluetoothSocketsClient.getMyPubKey());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            bluetoothSocketsClient.write(keyRequest.toString(), BluetoothSocketsClient.ConnectionType.CLIENT);
+
+            //Wait until pubKeyReceiver has been set
+            while (pubKeyReceiver == null) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         JSONObject out = new JSONObject();
         try {
             out.put("type", msgType.name());
