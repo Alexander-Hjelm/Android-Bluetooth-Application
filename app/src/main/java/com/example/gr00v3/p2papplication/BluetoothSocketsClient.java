@@ -412,6 +412,16 @@ public class BluetoothSocketsClient {
                     connectedThreadServer = new ConnectedThread(socket);
                     connectedThreadServer.start();
 
+                    //Send key request
+                    JSONObject keyRequest = new JSONObject();
+                    try {
+                        keyRequest.put("type", RemoteBroadcastService.MessageType.KEYREQUEST.name());
+                        keyRequest.put("value", rsaEncryption.getPubKey());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    write(keyRequest.toString(), ConnectionType.SERVER);
+
                     if(D) Log.d(TAG, "A connection was accepted on the server thread");
                     try {
                         mmServerSocket.close();
