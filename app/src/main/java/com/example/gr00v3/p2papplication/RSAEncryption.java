@@ -15,7 +15,7 @@ import java.security.spec.X509EncodedKeySpec;
 
 import org.apache.commons.io.FileUtils;
 
-public class RsaEncryptionUtils {
+public class RSAEncryption {
 
 	String pubKeyAFileName = "keys/pub/akey.pub";
 	String pubKeyBFileName = "keys/pub/bkey.pub";
@@ -34,9 +34,9 @@ public class RsaEncryptionUtils {
 	Certificate certA;
 	Certificate certB;
 	
-	public RsaEncryptionUtils() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public RSAEncryption() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 //		//Read keys from File to String
-		
+
 		privKeyA = getPrivKeyFromFile("keys/priv_pkcs8_format/akey_pkcs8.der");
 		privKeyB = getPrivKeyFromFile("keys/priv_pkcs8_format/bkey_pkcs8.der");
 		
