@@ -37,33 +37,12 @@ public class RSAEncryption {
 		storageDirectory = Environment.getExternalStorageDirectory();
 
 		privKey = getPrivKeyFromFile("keys/priv_pkcs8_format/key_pkcs8.der");
-		
 		pubKey = getPubKeyFromFile("keys/pub_der_format/pub.der");
-		
 		cert = getCertificateFromFile(certFileName);
-		
-		//Encryption		
-		String text = "Television Rules The Nation";
-		String encryptedText = null;
-		String decryptedText = null;
-		
-		//Encrypt text
-		try {
-			encryptedText = RSAEncryptUtil.encrypt(text, pubKey);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println(encryptedText);
-		
-		//Decrypt text
-		try {
-			decryptedText = RSAEncryptUtil.decrypt(encryptedText, privKey);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println(decryptedText.toString());
+
+		//Encryption
+		//encryptedText = RSAEncryptUtil.encrypt(text, pubKey);
+		//decryptedText = RSAEncryptUtil.decrypt(encryptedText, privKey);
 		
 		//Encrypt cert, gives IllegalBlockSizeException
 //		try {
