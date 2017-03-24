@@ -167,17 +167,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .title("You pressed here"));
     }
 
-    public void reDrawMarkers() {
-        //Clear and redraw all markers
-        mMap.clear();
+    public void drawMarkers(JSONArray arrayIn) {
+        //Draw markers from input array
 
         //TODO: Get POI:s from SQLite, not internal array
-        for (int i = 0; i < remoteBroadcastService.getPoiArray().length(); i++) {
+        for (int i = 0; i < arrayIn.length(); i++) {
             double lat = 0;
             double lng = 0;
             String name = "";
             try {
-                JSONObject obj = remoteBroadcastService.getPoiArray().getJSONObject(i);
+                JSONObject obj = arrayIn.getJSONObject(i);
                 JSONObject geometry = obj.getJSONObject("geometry");
                 JSONObject location = geometry.getJSONObject("location");
                 lat = location.getDouble("lat");
