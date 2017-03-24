@@ -122,6 +122,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapLongClick(LatLng point) {
         // case: internal, other units, google maps API
 
+        //Clear all markers
+        mMap.clear();
+
         //Get query parameters from UI components
         boolean queryPlacesAPI = placesAPICheckbox.isChecked();
         boolean queryP2P = p2pCheckbox.isChecked();
@@ -142,6 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (queryPlacesAPI) {
             JSONArray newPoiArray = remoteBroadcastService.retrievePoisFromGoogleMaps(point, radius, poiType);
             remoteBroadcastService.updateInternalPois(newPoiArray);
+            drawMarkers(newPoiArray);
         }
 
         // Get pois from bluetooth client

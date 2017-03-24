@@ -133,8 +133,6 @@ public class RemoteBroadcastService  {
         if (poiArray.length() == 0) {
             poiArray = JsonUtils.concatArrays(new JSONArray(), arrayIn);
         }
-
-        parentActivity.reDrawMarkers();
     }
 
     public void startBTServer() {
@@ -197,6 +195,7 @@ public class RemoteBroadcastService  {
                     e.printStackTrace();
                 }
                 updateInternalPois(newPoiArray);
+                parentActivity.drawMarkers(newPoiArray);
                 break;
             case "KEYREQUEST":
                 break;
