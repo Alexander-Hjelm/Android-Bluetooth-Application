@@ -14,7 +14,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ExecutionException;
 
 import static android.R.attr.radius;
@@ -57,6 +60,7 @@ public class RemoteBroadcastService  {
 
         //Initialize BT Sockets Client
         bluetoothSocketsClient = new BluetoothSocketsClient(parentActivity, this, new Handler());
+        pubKeyThis = bluetoothSocketsClient.getMyPubKey();
     }
 
     public JSONArray getPoiArray() {
@@ -203,8 +207,40 @@ public class RemoteBroadcastService  {
                 parentActivity.drawMarkers(newPoiArray);
                 break;
             case "KEYREQUEST":
+                //If receivers pubkey is not set, store and send key response
+                if ( pubKeyReceiver == null ) {
+                    JSONObject keyResponse = new JSONObject();
+                    try {
+                        pubKeyReceiver = RSAEncryptUtil.buildPublicKeyFromString(MsgJson.getString("value"));
+                        keyResponse.put("type", MessageType.KEYRESPONSE.name());
+                        keyResponse.put("value", pubKeyThis);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (InvalidKeySpecException e) {
+                        e.printStackTrace();
+                    }
+                    writeBT(keyResponse, MessageType.KEYRESPONSE, BluetoothSocketsClient.ConnectionType.SERVER);
+                }
                 break;
             case "KEYRESPONSE":
+                //If receivers pubkey is not set, store and do not send anything further
+                if ( pubKeyReceiver == null ) {
+                    try {
+                        pubKeyReceiver = RSAEncryptUtil.buildPublicKeyFromString(MsgJson.getString("value"));
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (InvalidKeySpecException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 break;
         }
 
@@ -218,7 +254,7 @@ public class RemoteBroadcastService  {
             JSONObject keyRequest = new JSONObject();
             try {
                 keyRequest.put("type", RemoteBroadcastService.MessageType.KEYREQUEST.name());
-                keyRequest.put("value", bluetoothSocketsClient.getMyPubKey());
+                keyRequest.put("value", pubKeyThis);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
