@@ -1,5 +1,7 @@
 package com.example.gr00v3.p2papplication;
 
+import android.os.Environment;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import org.apache.commons.io.FileUtils;
+import org.spongycastle.asn1.cms.EnvelopedData;
 
 public class RSAEncryption {
 
@@ -33,9 +36,13 @@ public class RSAEncryption {
 	PrivateKey privKeyB;
 	Certificate certA;
 	Certificate certB;
+
+	private final File storageDirectory;
 	
 	public RSAEncryption() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 //		//Read keys from File to String
+
+		storageDirectory = Environment.getExternalStorageDirectory();
 
 		privKeyA = getPrivKeyFromFile("keys/priv_pkcs8_format/akey_pkcs8.der");
 		privKeyB = getPrivKeyFromFile("keys/priv_pkcs8_format/bkey_pkcs8.der");
@@ -80,7 +87,7 @@ public class RSAEncryption {
 	
 	private PrivateKey getPrivKeyFromFile( String fileName ) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		//byte[] keyBytes = Files.readAllBytes(new File(fileName).toPath());
-		byte keyBytes[] = FileUtils.readFileToByteArray(new File(fileName));
+		byte keyBytes[] = FileUtils.readFileToByteArray(new File(storageDirectory, fileName));
 
 	    PKCS8EncodedKeySpec spec =
 	      new PKCS8EncodedKeySpec(keyBytes);
@@ -90,7 +97,7 @@ public class RSAEncryption {
 	
 	private PublicKey getPubKeyFromFile( String fileName ) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		//byte[] keyBytes = Files.readAllBytes(new File(fileName).toPath());
-		byte keyBytes[] = FileUtils.readFileToByteArray(new File(fileName));
+		byte keyBytes[] = FileUtils.readFileToByteArray(new File(storageDirectory, fileName));
 
 	    X509EncodedKeySpec spec =
 	      new X509EncodedKeySpec(keyBytes);
@@ -100,9 +107,10 @@ public class RSAEncryption {
 	
 	private Certificate getCertificateFromFile( String fileName ) {
 		Certificate cert = null;
+		File file = new File(storageDirectory, fileName);
 		try{
 		    CertificateFactory cf = CertificateFactory.getInstance("X.509");
-		    cert = cf.generateCertificate(new FileInputStream(fileName));
+		    cert = cf.generateCertificate(new FileInputStream(file));
 		}catch(Exception ex){
 		    ex.printStackTrace();
 		}
