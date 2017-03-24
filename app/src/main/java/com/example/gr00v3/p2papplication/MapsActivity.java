@@ -161,6 +161,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     BluetoothSocketsClient.ConnectionType.CLIENT);
         }
 
+        // Get pois from internal storage
+        if (queryInternal) {
+            JSONArray newPoiArray = remoteBroadcastService.doInternalQuery(radius, poiType, point.latitude, point.longitude);
+            drawMarkers(newPoiArray);
+        }
+
         mMap.addMarker(new MarkerOptions()
                 .position(point)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.downvote))
