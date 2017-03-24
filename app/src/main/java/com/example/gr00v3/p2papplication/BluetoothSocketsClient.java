@@ -64,6 +64,8 @@ public class BluetoothSocketsClient {
     //private static final UUID MY_UUID = UUID.randomUUID();
     private static final UUID MY_UUID = UUID.fromString("9d36c5f7-2e54-4bed-9969-7f5100e6583d0");
 
+    //Encryption
+    private RSAEncryption rsaEncryption;
 
     // Member fields
     private final Activity mParentActivity;
@@ -88,6 +90,7 @@ public class BluetoothSocketsClient {
         mRemoteBroadcastService = remoteBroadcastService;
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mContext = parentActivity.getApplicationContext();
+        rsaEncryption = new RSAEncryption();
         //mHandler = handler;
 
         //Initialize broadcast receiver

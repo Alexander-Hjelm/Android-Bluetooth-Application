@@ -31,13 +31,22 @@ public class RSAEncryption {
 
 	private final File storageDirectory;
 	
-	public RSAEncryption() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public RSAEncryption() {
 //		//Read keys from File to String
 
 		storageDirectory = Environment.getExternalStorageDirectory();
 
-		privKey = getPrivKeyFromFile("keys/priv_pkcs8_format/key_pkcs8.der");
-		pubKey = getPubKeyFromFile("keys/pub_der_format/pub.der");
+		try {
+			privKey = getPrivKeyFromFile("keys/priv_pkcs8_format/key_pkcs8.der");
+			pubKey = getPubKeyFromFile("keys/pub_der_format/pub.der");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		cert = getCertificateFromFile(certFileName);
 
 		//Encryption
