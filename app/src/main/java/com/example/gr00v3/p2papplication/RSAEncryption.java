@@ -20,14 +20,14 @@ import org.spongycastle.asn1.cms.EnvelopedData;
 
 public class RSAEncryption {
 
-	String pubKeyFileName = "keys/pub/key.pub";
-	String privKeyFileName = "keys/priv/key.pem";
-	String certFileName = "keys/cert/cert.crt";
-	String pubKeyFileNameDER = "keys/pub_der_format/pub.der";
+	private final String pubKeyFileName = "keys/pub/key.pub";
+	private final String privKeyFileName = "keys/priv/key.pem";
+	private final String certFileName = "keys/cert/cert.crt";
+	private final String pubKeyFileNameDER = "keys/pub_der_format/pub.der";
 	
-	PublicKey pubKey;
-	PrivateKey privKey;
-	Certificate cert;
+	private PublicKey pubKey;
+	private PrivateKey privKey;
+	private Certificate cert;
 
 	private final String storageDirectory;
 	
@@ -97,6 +97,10 @@ public class RSAEncryption {
 		    ex.printStackTrace();
 		}
 		return cert;
+	}
+
+	public String getPubKey() {
+		return pubKey.toString();
 	}
 }
 
