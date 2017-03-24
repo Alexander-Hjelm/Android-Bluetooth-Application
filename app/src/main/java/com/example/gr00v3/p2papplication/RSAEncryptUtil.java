@@ -14,6 +14,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.spec.EncodedKeySpec;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -301,6 +302,14 @@ public class RSAEncryptUtil
             }
         }
         return newArr;
+    }
+
+    public static PublicKey buildPublicKeyFromString(String str) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+        byte[] publicBytes = decodeBASE64(str);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PublicKey pubKey = keyFactory.generatePublic(keySpec);
+        return pubKey;
     }
 
 }
