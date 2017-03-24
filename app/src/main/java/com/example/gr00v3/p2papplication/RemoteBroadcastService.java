@@ -179,45 +179,7 @@ public class RemoteBroadcastService  {
                     e.printStackTrace();
                 }
 
-                JSONArray outArray = new JSONArray();
-
-                //Iterate over all JSON-objects in JSONArray and filter, using query parameters
-                //TODO: Get POIs from SQLite
-                for (int i = 0; i < poiArray.length(); i++) {
-                    double latComp = 0;
-                    double lngComp = 0;
-                    JSONArray typesComp = new JSONArray();
-
-                    JSONObject poi = null;
-                    try {
-                        poi = poiArray.getJSONObject(i);
-
-                        latComp = poi.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
-                        lngComp = poi.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
-                        typesComp = poi.getJSONArray("types");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    // Check distance
-                    final double RAD = 0.000008998719243599958;
-                    if (Math.sqrt(Math.pow(latComp - lat, 2) + Math.pow(lngComp - lng, 2)) / RAD > radius) {
-                        continue;
-                    }
-
-                    // Check type
-                    for (int j = 0; j < typesComp.length(); j++) {
-                        String poiTypeComp = null;
-                        try {
-                            poiTypeComp = typesComp.getString(j);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        if (poiTypeComp.equals(poiType)) {
-                            outArray.put(poi);
-                        }
-                    }
-                }
+                JSONArray outArray = doInternalQuery(radius, poiType, lat, lng);
 
                 try {
                     outObj.put("poiArray", outArray);
@@ -255,6 +217,50 @@ public class RemoteBroadcastService  {
         }
         Log.d("RemoteBroadcastService", "Sending message over BT: " + out.toString());
         bluetoothSocketsClient.write(out.toString(), connType);
+    }
+
+    public JSONArray doInternalQuery(double radius, String poiType, double lat, double lng) {
+
+        JSONArray outArray = new JSONArray();
+
+        for (int i = 0; i < poiArray.length(); i++) {
+            double latComp = 0;
+            double lngComp = 0;
+            JSONArray typesComp = new JSONArray();
+
+            JSONObject poi = null;
+            try {
+                poi = poiArray.getJSONObject(i);
+
+                latComp = poi.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+                lngComp = poi.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+                typesComp = poi.getJSONArray("types");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Check distance
+            final double RAD = 0.000008998719243599958;
+            if (Math.sqrt(Math.pow(latComp - lat, 2) + Math.pow(lngComp - lng, 2)) / RAD > radius) {
+                continue;
+            }
+
+            // Check type
+            for (int j = 0; j < typesComp.length(); j++) {
+                String poiTypeComp = null;
+                try {
+                    poiTypeComp = typesComp.getString(j);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (poiTypeComp.equals(poiType)) {
+                    outArray.put(poi);
+                }
+            }
+        }
+
+        return outArray;
+
     }
 
     public static enum MessageType {
