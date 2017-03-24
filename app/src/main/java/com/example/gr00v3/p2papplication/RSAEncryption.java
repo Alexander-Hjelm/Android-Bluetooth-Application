@@ -99,8 +99,8 @@ public class RSAEncryption {
 		return cert;
 	}
 
-	public String getPubKey() {
-		return pubKey.toString();
+	public PublicKey getPubKey() {
+		return pubKey;
 	}
 }
 
