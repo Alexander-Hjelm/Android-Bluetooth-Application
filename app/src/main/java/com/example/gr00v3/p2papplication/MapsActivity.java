@@ -23,6 +23,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import org.json.*;
 
+import static android.R.attr.type;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private final static int REQUEST_ENABLE_BT = 1;
@@ -147,7 +149,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //Build POI request
             JSONObject poiRequestObj = new JSONObject();
             try {
-                //TODO: add longlat and query type
                 poiRequestObj.put("radius", radius);
                 poiRequestObj.put("poiType", poiType);
                 poiRequestObj.put("lat", point.latitude);
@@ -170,6 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Clear and redraw all markers
         mMap.clear();
 
+        //TODO: Get POI:s from SQLite, not internal array
         for (int i = 0; i < remoteBroadcastService.getPoiArray().length(); i++) {
             double lat = 0;
             double lng = 0;

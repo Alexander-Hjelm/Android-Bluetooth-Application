@@ -107,8 +107,8 @@ public class RemoteBroadcastService  {
             for (int i = 0; i < arrayIn.length(); i++) {
                 Boolean alreadyExists = false;
 
-                //TODO: Smart hashtable when adding new pois. Sort incoming pois based on a square grid with sides = radius of query (500m default)
                 for (int j = 0; j < poiArray.length(); j++) {
+                    //TODO: compare JSONObject in ArrayIn with objets in SQLLite
                     if (JsonUtils.compareObjectsByElement((JSONObject) arrayIn.get(i), (JSONObject) poiArray.get(j), "geometry.location.lat")
                             && JsonUtils.compareObjectsByElement((JSONObject) arrayIn.get(i), (JSONObject) poiArray.get(j), "geometry.location.lng")
                             && JsonUtils.compareObjectsByElement((JSONObject) arrayIn.get(i), (JSONObject) poiArray.get(j), "name")
@@ -121,6 +121,8 @@ public class RemoteBroadcastService  {
                     diffArray.put(arrayIn.get(i));
                 }
             }
+
+            //TODO: Add diffArray to SQLite
             poiArray = JsonUtils.concatArrays(poiArray, diffArray);
         }
         catch (JSONException e) {
@@ -180,6 +182,7 @@ public class RemoteBroadcastService  {
                 JSONArray outArray = new JSONArray();
 
                 //Iterate over all JSON-objects in JSONArray and filter, using query parameters
+                //TODO: Get POIs from SQLite
                 for (int i = 0; i < poiArray.length(); i++) {
                     double latComp = 0;
                     double lngComp = 0;
