@@ -290,7 +290,8 @@ public class RemoteBroadcastService  {
         JSONObject out = new JSONObject();
         try {
             out.put("type", msgType.name());
-            out.put("value", msg);
+            //out.put("value", msg);
+            out.put("value", rsaEncryption.encrypt(msg.toString(), pubKeyReceiver));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -375,7 +376,7 @@ public class RemoteBroadcastService  {
             JSONObject out = new JSONObject();
             try {
                 out.put("type", msgType.name());
-                out.put("value", msg);
+                out.put("value", rsaEncryption.encrypt(msg.toString(), pubKeyReceiver));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
