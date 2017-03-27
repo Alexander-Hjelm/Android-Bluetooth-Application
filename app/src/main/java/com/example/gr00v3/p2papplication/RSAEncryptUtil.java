@@ -195,7 +195,8 @@ public class RSAEncryptUtil
     {
         // BASE64Decoder b64 = new BASE64Decoder();
         // return b64.decodeBuffer(text);
-        return Base64.decodeBase64(text);
+        //Log.d("TEG", Base64.class.getProtectionDomain().getCodeSource().getLocation().toString());
+        return Base64.decodeBase64(text.getBytes());
     }
 
     /**
