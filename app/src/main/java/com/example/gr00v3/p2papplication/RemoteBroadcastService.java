@@ -261,14 +261,10 @@ public class RemoteBroadcastService  {
             }
             bluetoothSocketsClient.write(keyRequest.toString(), connType);
 
-            //Wait until pubKeyReceiver has been set
-            //while (pubKeyReceiver == null) {
-            //    try {
-            //        Thread.sleep(10);
-            //    } catch (InterruptedException e) {
-            //       e.printStackTrace();
-            //    }
-            //}
+            //Withhold sending the message until pubKeyReceiver has been set, inside waitAndSendThread.
+            WaitAndSendThread waitAndSendThread = new WaitAndSendThread(msg, msgType, connType);
+            waitAndSendThread.start();
+            return;
         }
 
         JSONObject out = new JSONObject();
@@ -331,6 +327,41 @@ public class RemoteBroadcastService  {
         POIRESPONSE,
         KEYREQUEST,
         KEYRESPONSE
+    }
+
+    public class WaitAndSendThread extends Thread {
+
+        private JSONObject msg;
+        private MessageType msgType;
+        private BluetoothSocketsClient.ConnectionType connType;
+
+        public WaitAndSendThread(JSONObject msg, MessageType msgType, BluetoothSocketsClient.ConnectionType connType) {
+            super();
+            this.msg = msg;
+            this.msgType = msgType;
+            this.connType = connType;
+        }
+
+        public void run() {
+            while (pubKeyReceiver == null) {
+                try {
+                    this.sleep(10);
+                } catch (InterruptedException e) {
+                   e.printStackTrace();
+                }
+            }
+
+
+            JSONObject out = new JSONObject();
+            try {
+                out.put("type", msgType.name());
+                out.put("value", msg);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("RemoteBroadcastService", "Sending message over BT: " + out.toString());
+            bluetoothSocketsClient.write(out.toString(), connType);
+        }
     }
 
 }
