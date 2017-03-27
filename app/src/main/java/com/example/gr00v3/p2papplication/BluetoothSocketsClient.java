@@ -314,7 +314,7 @@ public class BluetoothSocketsClient {
 
                 try {
                     Log.d(TAG, "LISTENING 4 INCOMING MESSAGES");
-                    mmBuffer = new byte[1024];  //Clear buffer
+                    mmBuffer = new byte[128];  //Clear buffer
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
                     // Send the obtained bytes to the UI activity.
