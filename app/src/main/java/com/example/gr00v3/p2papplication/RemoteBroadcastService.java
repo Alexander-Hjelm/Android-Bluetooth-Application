@@ -48,6 +48,9 @@ public class RemoteBroadcastService  {
     // Name of the connected device
     private String mConnectedDeviceName = null;
 
+    //Encryption
+    private RSAEncryption rsaEncryption;
+
     // Pubkey of BT receiver
     private PublicKey pubKeyThis;
     private PublicKey pubKeyReceiver;
@@ -57,6 +60,9 @@ public class RemoteBroadcastService  {
 
         //Initialize BLE client
         //bleClient = new BLEClient(parentActivity.getApplicationContext(), parentActivity);
+
+        //Initialize encryption handler
+        rsaEncryption = new RSAEncryption();
 
         //Initialize BT Sockets Client
         bluetoothSocketsClient = new BluetoothSocketsClient(parentActivity, this, new Handler());
