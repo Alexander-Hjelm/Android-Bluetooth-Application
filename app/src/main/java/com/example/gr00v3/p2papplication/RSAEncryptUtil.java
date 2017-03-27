@@ -308,7 +308,6 @@ public class RSAEncryptUtil
     }
 
     public static PublicKey buildPublicKeyFromString(String str) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
-        //TODO: Solve Base64 issue with apache.commons
         byte[] publicBytes = decodeBASE64(str);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
