@@ -258,7 +258,7 @@ public class RemoteBroadcastService  {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            bluetoothSocketsClient.write(keyRequest.toString(), BluetoothSocketsClient.ConnectionType.CLIENT);
+            bluetoothSocketsClient.write(keyRequest.toString(), connType);
 
             //Wait until pubKeyReceiver has been set
             while (pubKeyReceiver == null) {
