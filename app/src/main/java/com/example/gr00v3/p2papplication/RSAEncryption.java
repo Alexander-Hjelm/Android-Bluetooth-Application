@@ -86,6 +86,16 @@ public class RSAEncryption {
 	    KeyFactory kf = KeyFactory.getInstance("RSA");
 	    return kf.generatePublic(spec);
 	}
+
+    private PublicKey getPubKeyFromString( String str ) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+        //byte[] keyBytes = Files.readAllBytes(new File(fileName).toPath());
+        byte keyBytes[] = str.getBytes();
+
+        X509EncodedKeySpec spec =
+                new X509EncodedKeySpec(keyBytes);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        return kf.generatePublic(spec);
+    }
 	
 	private Certificate getCertificateFromFile( String fileName ) {
 		Certificate cert = null;
@@ -100,8 +110,9 @@ public class RSAEncryption {
 	}
 
 	public PublicKey getPubKey() {
-		return pubKey;
-	}
+        return pubKey;
+    }
+
 }
 
 //http://www.pixelstech.net/article/1433764001-Generate-certificate-from-cert-file-in-Java
