@@ -74,7 +74,7 @@ public class RSAEncryption {
         String out = "";
 
         try {
-            RSAEncryptUtil.encrypt(text, pubKey);
+            out = RSAEncryptUtil.encrypt(text, pubKey);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,7 +86,7 @@ public class RSAEncryption {
         String out = "";
 
         try {
-            RSAEncryptUtil.decrypt(text, privKey);
+            out = RSAEncryptUtil.decrypt(text, privKey);
         } catch (Exception e) {
             e.printStackTrace();
         }
