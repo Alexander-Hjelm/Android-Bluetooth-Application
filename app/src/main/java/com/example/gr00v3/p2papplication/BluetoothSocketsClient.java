@@ -319,6 +319,8 @@ public class BluetoothSocketsClient {
                     numBytes = mmInStream.read(mmBuffer);
                     // Send the obtained bytes to the UI activity.
 
+                    //TODO: Decryption
+
                     outMsg = outMsg.concat(new String(mmBuffer, "UTF-8"));
 
                 } catch (IOException e) {
