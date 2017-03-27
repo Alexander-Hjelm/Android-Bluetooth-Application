@@ -153,6 +153,11 @@ public class RSAEncryption {
         return pubKey;
     }
 
+    public PrivateKey getPrivKey() {
+        return privKey;
+    }
+
+
 }
 
 //http://www.pixelstech.net/article/1433764001-Generate-certificate-from-cert-file-in-Java
