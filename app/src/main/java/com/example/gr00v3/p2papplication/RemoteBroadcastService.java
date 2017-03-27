@@ -213,7 +213,7 @@ public class RemoteBroadcastService  {
                     try {
                         pubKeyReceiver = RSAEncryptUtil.buildPublicKeyFromString(MsgJson.getString("value"));
                         keyResponse.put("type", MessageType.KEYRESPONSE.name());
-                        keyResponse.put("value", pubKeyThis);
+                        keyResponse.put("value", RSAEncryptUtil.getKeyAsString(pubKeyThis));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -254,7 +254,7 @@ public class RemoteBroadcastService  {
             JSONObject keyRequest = new JSONObject();
             try {
                 keyRequest.put("type", RemoteBroadcastService.MessageType.KEYREQUEST.name());
-                keyRequest.put("value", pubKeyThis);
+                keyRequest.put("value", RSAEncryptUtil.getKeyAsString(pubKeyThis));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
