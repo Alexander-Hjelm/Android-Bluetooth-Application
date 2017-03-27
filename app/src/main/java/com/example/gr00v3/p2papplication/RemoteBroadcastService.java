@@ -223,7 +223,8 @@ public class RemoteBroadcastService  {
                     } catch (InvalidKeySpecException e) {
                         e.printStackTrace();
                     }
-                    writeBT(keyResponse, MessageType.KEYRESPONSE, BluetoothSocketsClient.ConnectionType.SERVER);
+                    Log.d("RemoteBroadcastService", "SENDING KEYRESPONSE:" + keyResponse.toString());
+                    bluetoothSocketsClient.write(keyResponse.toString(), BluetoothSocketsClient.ConnectionType.SERVER);
                 }
                 break;
             case "KEYRESPONSE":
@@ -261,13 +262,13 @@ public class RemoteBroadcastService  {
             bluetoothSocketsClient.write(keyRequest.toString(), connType);
 
             //Wait until pubKeyReceiver has been set
-            while (pubKeyReceiver == null) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            //while (pubKeyReceiver == null) {
+            //    try {
+            //        Thread.sleep(10);
+            //    } catch (InterruptedException e) {
+            //       e.printStackTrace();
+            //    }
+            //}
         }
 
         JSONObject out = new JSONObject();
