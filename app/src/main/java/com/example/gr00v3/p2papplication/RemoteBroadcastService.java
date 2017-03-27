@@ -24,6 +24,7 @@ import static android.R.attr.radius;
 import static android.R.attr.value;
 import static android.R.attr.x;
 import static android.media.CamcorderProfile.get;
+import static com.example.gr00v3.p2papplication.RSAEncryptUtil.encrypt;
 import static org.spongycastle.asn1.pkcs.PKCSObjectIdentifiers.rsaEncryption;
 
 /**
@@ -183,7 +184,15 @@ public class RemoteBroadcastService  {
                 double lng = 0;
                 double lat = 0;
                 try {
-                    JSONObject value = MsgJson.getJSONObject("value");
+                    //JSONObject value = MsgJson.getJSONObject("value");
+
+                    //Decrypt
+                    String msgDecr = rsaEncryption.decrypt(MsgJson.getString("value"), rsaEncryption.getPrivKey());
+                    Log.d("Encryption Stuff", "DECR; POIRQUEST: " + msgDecr);
+                    JSONObject value = new JSONObject(msgDecr);
+
+
+
                     radius = value.getDouble("radius");
                     poiType = value.getString("poiType");
                     lng = value.getDouble("lng");
@@ -205,7 +214,12 @@ public class RemoteBroadcastService  {
             case "POIRESPONSE":
                 JSONArray newPoiArray = new JSONArray();
                 try {
-                    newPoiArray = MsgJson.getJSONObject("value").getJSONArray("poiArray");
+                    //Decrypt
+                    String msgDecr = rsaEncryption.decrypt(MsgJson.getString("value"), rsaEncryption.getPrivKey());
+                    Log.d("Encryption Stuff", "DECR; POIREQUEST: " + msgDecr);
+                    JSONObject value = new JSONObject(msgDecr);
+
+                    newPoiArray = value.getJSONArray("poiArray");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
