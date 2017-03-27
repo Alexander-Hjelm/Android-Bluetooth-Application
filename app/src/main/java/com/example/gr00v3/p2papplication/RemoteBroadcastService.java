@@ -269,7 +269,7 @@ public class RemoteBroadcastService  {
 
     //Write a JSON-object over the bluetooth-connection.
     public void writeBT(JSONObject msg, MessageType msgType, BluetoothSocketsClient.ConnectionType connType) {
-        //TODO: Encryption
+
         //Send key request if key not already stored
         if (pubKeyReceiver == null) {
             JSONObject keyRequest = new JSONObject();
