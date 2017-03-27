@@ -1,5 +1,7 @@
 package com.example.gr00v3.p2papplication;
 
+import android.util.Log;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -180,7 +182,7 @@ public class RSAEncryptUtil
     {
         // BASE64Encoder b64 = new BASE64Encoder();
         // return b64.encode(bytes, false);
-        return Base64.encodeBase64String(bytes);
+        return new String(Base64.encodeBase64(bytes));
     }
 
     /**
