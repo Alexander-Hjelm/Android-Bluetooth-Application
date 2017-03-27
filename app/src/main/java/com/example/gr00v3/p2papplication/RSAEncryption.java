@@ -94,6 +94,18 @@ public class RSAEncryption {
         return out;
     }
 
+    public byte[] decryptBytes(byte[] bytes, PrivateKey privKey) {
+        byte[] out = null;
+
+        try {
+            out = RSAEncryptUtil.decrypt(bytes, privKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return out;
+    }
+
 
     private PrivateKey getPrivKeyFromFile( String fileName ) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		//byte[] keyBytes = Files.readAllBytes(new File(fileName).toPath());
