@@ -15,8 +15,14 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.spongycastle.asn1.cms.EnvelopedData;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class RSAEncryption {
 
@@ -29,9 +35,19 @@ public class RSAEncryption {
 	private PrivateKey privKey;
 	private Certificate cert;
 
+	private Cipher cipher;
+
 	private final String storageDirectory;
 	
 	public RSAEncryption() {
+		try {
+			this.cipher = Cipher.getInstance("RSA");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			e.printStackTrace();
+		}
+
 //		//Read keys from File to String
 
 		//storageDirectory = internalStorageDirectory;
@@ -50,49 +66,8 @@ public class RSAEncryption {
 
 		cert = getCertificateFromFile(certFileName);
 
-		String test = storageDirectory + "keys/priv_pkcs8_format/key_pkcs8.der";
-
-		int a = 1;
-
-		//Encryption
-		//encryptedText = RSAEncryptUtil.encrypt(text, pubKey);
-		//decryptedText = RSAEncryptUtil.decrypt(encryptedText, privKey);
-		
-		//Encrypt cert, gives IllegalBlockSizeException
-//		try {
-//			encryptedText = RSAEncryptUtil.encrypt(certA.toString(), pubKeyA);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 ////		http://stackoverflow.com/questions/10007147/getting-a-illegalblocksizeexception-data-must-not-be-longer-than-256-bytes-when
 	}
-
-    //encryptedText = RSAEncryptUtil.encrypt(text, pubKey);
-    //decryptedText = RSAEncryptUtil.decrypt(encryptedText, privKey);
-
-    public String encrypt(String text, PublicKey pubKey) {
-        String out = "";
-
-        try {
-            out = RSAEncryptUtil.encrypt(text, pubKey);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return out;
-    }
-
-    public String decrypt(String text, PrivateKey privKey) {
-        String out = "";
-
-        try {
-            out = RSAEncryptUtil.decrypt(text, privKey);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return out;
-    }
 
     public byte[] decryptBytes(byte[] bytes, PrivateKey privKey) {
         byte[] out = null;
@@ -105,7 +80,6 @@ public class RSAEncryption {
 
         return out;
     }
-
 
     private PrivateKey getPrivKeyFromFile( String fileName ) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		//byte[] keyBytes = Files.readAllBytes(new File(fileName).toPath());
@@ -157,7 +131,80 @@ public class RSAEncryption {
         return privKey;
     }
 
+	private byte[] blockCipher(byte[] bytes, int mode) throws IllegalBlockSizeException, BadPaddingException {
+		// string initialize 2 buffers.
+		// scrambled will hold intermediate results
+		byte[] scrambled = new byte[0];
 
+		// toReturn will hold the total result
+		byte[] toReturn = new byte[0];
+		// if we encrypt we use 100 byte long blocks. Decryption requires 128 byte long blocks (because of RSA)
+		int length = (mode == Cipher.ENCRYPT_MODE)? 100 : 128;
+
+		// another buffer. this one will hold the bytes that have to be modified in this step
+		byte[] buffer = new byte[length];
+
+		for (int i=0; i< bytes.length; i++){
+
+			// if we filled our buffer array we have our block ready for de- or encryption
+			if ((i > 0) && (i % length == 0)){
+				//execute the operation
+				scrambled = cipher.doFinal(buffer);
+				// add the result to our total result.
+				toReturn = append(toReturn,scrambled);
+				// here we calculate the length of the next buffer required
+				int newlength = length;
+
+				// if newlength would be longer than remaining bytes in the bytes array we shorten it.
+				if (i + length > bytes.length) {
+					newlength = bytes.length - i;
+				}
+				// clean the buffer array
+				buffer = new byte[newlength];
+			}
+			// copy byte into our buffer.
+			buffer[i%length] = bytes[i];
+		}
+
+		// this step is needed if we had a trailing buffer. should only happen when encrypting.
+		// example: we encrypt 110 bytes. 100 bytes per run means we "forgot" the last 10 bytes. they are in the buffer array
+		scrambled = cipher.doFinal(buffer);
+
+		// final step before we can return the modified data.
+		toReturn = append(toReturn,scrambled);
+
+		return toReturn;
+	}
+
+	private byte[] append(byte[] prefix, byte[] suffix){
+		byte[] toReturn = new byte[prefix.length + suffix.length];
+		for (int i=0; i< prefix.length; i++){
+			toReturn[i] = prefix[i];
+		}
+		for (int i=0; i< suffix.length; i++){
+			toReturn[i+prefix.length] = suffix[i];
+		}
+		return toReturn;
+	}
+
+	public String encrypt(String plaintext,  PublicKey pubkey) throws Exception{
+		this.cipher.init(Cipher.ENCRYPT_MODE, pubkey);
+		byte[] bytes = plaintext.getBytes("UTF-8");
+
+		byte[] encrypted = blockCipher(bytes,Cipher.ENCRYPT_MODE);
+
+		char[] encryptedTranspherable = Hex.encodeHex(encrypted);
+		return new String(encryptedTranspherable);
+	}
+
+	public String decrypt(String encrypted, PrivateKey privKey) throws Exception{
+		this.cipher.init(Cipher.DECRYPT_MODE, privKey);
+		byte[] bts = Hex.decodeHex(encrypted.toCharArray());
+
+		byte[] decrypted = blockCipher(bts,Cipher.DECRYPT_MODE);
+
+		return new String(decrypted,"UTF-8");
+	}
 }
 
 //http://www.pixelstech.net/article/1433764001-Generate-certificate-from-cert-file-in-Java
