@@ -69,18 +69,6 @@ public class RSAEncryption {
 ////		http://stackoverflow.com/questions/10007147/getting-a-illegalblocksizeexception-data-must-not-be-longer-than-256-bytes-when
 	}
 
-    public byte[] decryptBytes(byte[] bytes, PrivateKey privKey) {
-        byte[] out = null;
-
-        try {
-            out = RSAEncryptUtil.decrypt(bytes, privKey);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return out;
-    }
-
     private PrivateKey getPrivKeyFromFile( String fileName ) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		//byte[] keyBytes = Files.readAllBytes(new File(fileName).toPath());
 		byte keyBytes[] = FileUtils.readFileToByteArray(new File(storageDirectory + fileName));
