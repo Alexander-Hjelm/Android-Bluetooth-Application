@@ -24,7 +24,6 @@ import static android.R.attr.radius;
 import static android.R.attr.value;
 import static android.R.attr.x;
 import static android.media.CamcorderProfile.get;
-import static com.example.gr00v3.p2papplication.RSAEncryptUtil.encrypt;
 import static org.spongycastle.asn1.pkcs.PKCSObjectIdentifiers.rsaEncryption;
 
 /**
@@ -235,9 +234,9 @@ public class RemoteBroadcastService  {
                 if ( pubKeyReceiver == null ) {
                     JSONObject keyResponse = new JSONObject();
                     try {
-                        pubKeyReceiver = RSAEncryptUtil.buildPublicKeyFromString(MsgJson.getString("value"));
+                        pubKeyReceiver = RSAEncryption.buildPublicKeyFromString(MsgJson.getString("value"));
                         keyResponse.put("type", MessageType.KEYRESPONSE.name());
-                        keyResponse.put("value", RSAEncryptUtil.getKeyAsString(pubKeyThis));
+                        keyResponse.put("value", RSAEncryption.getKeyAsString(pubKeyThis));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -255,7 +254,7 @@ public class RemoteBroadcastService  {
                 //If receivers pubkey is not set, store and do not send anything further
                 if ( pubKeyReceiver == null ) {
                     try {
-                        pubKeyReceiver = RSAEncryptUtil.buildPublicKeyFromString(MsgJson.getString("value"));
+                        pubKeyReceiver = RSAEncryption.buildPublicKeyFromString(MsgJson.getString("value"));
                     } catch (NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     } catch (InvalidKeySpecException e) {
@@ -279,7 +278,7 @@ public class RemoteBroadcastService  {
             JSONObject keyRequest = new JSONObject();
             try {
                 keyRequest.put("type", RemoteBroadcastService.MessageType.KEYREQUEST.name());
-                keyRequest.put("value", RSAEncryptUtil.getKeyAsString(pubKeyThis));
+                keyRequest.put("value", RSAEncryption.getKeyAsString(pubKeyThis));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

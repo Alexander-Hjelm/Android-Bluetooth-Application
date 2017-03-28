@@ -5,19 +5,23 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.spongycastle.asn1.cms.EnvelopedData;
+import org.spongycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -40,6 +44,8 @@ public class RSAEncryption {
 	private final String storageDirectory;
 	
 	public RSAEncryption() {
+		Security.addProvider(new BouncyCastleProvider());
+
 		try {
 			this.cipher = Cipher.getInstance("RSA");
 		} catch (NoSuchAlgorithmException e) {
@@ -109,6 +115,52 @@ public class RSAEncryption {
 		    ex.printStackTrace();
 		}
 		return cert;
+	}
+
+	public static PublicKey buildPublicKeyFromString(String str) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+		byte[] publicBytes = decodeBASE64(str);
+		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicBytes);
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		PublicKey pubKey = keyFactory.generatePublic(keySpec);
+		return pubKey;
+	}
+
+	/**
+	 * Encode bytes array to BASE64 string
+	 * @param bytes
+	 * @return Encoded string
+	 */
+	private static String encodeBASE64(byte[] bytes)
+	{
+		// BASE64Encoder b64 = new BASE64Encoder();
+		// return b64.encode(bytes, false);
+		return new String(Base64.encodeBase64(bytes));
+	}
+
+	/**
+	 * Decode BASE64 encoded string to bytes array
+	 * @param text The string
+	 * @return Bytes array
+	 * @throws IOException
+	 */
+	private static byte[] decodeBASE64(String text) throws IOException
+	{
+		// BASE64Decoder b64 = new BASE64Decoder();
+		// return b64.decodeBuffer(text);
+		//Log.d("TEG", Base64.class.getProtectionDomain().getCodeSource().getLocation().toString());
+		return Base64.decodeBase64(text.getBytes());
+	}
+
+	/**
+	 * Convert a Key to string encoded as BASE64
+	 * @param key The key (private or public)
+	 * @return A string representation of the key
+	 */
+	public static String getKeyAsString(Key key)
+	{
+		// Get the bytes of the key
+		byte[] keyBytes = key.getEncoded();
+		return encodeBASE64(keyBytes);
 	}
 
 	public PublicKey getPubKey() {
