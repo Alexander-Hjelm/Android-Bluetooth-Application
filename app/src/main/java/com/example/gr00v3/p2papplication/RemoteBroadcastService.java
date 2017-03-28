@@ -199,6 +199,8 @@ public class RemoteBroadcastService  {
                     lat = value.getDouble("lat");
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 JSONArray outArray = doInternalQuery(radius, poiType, lat, lng);
@@ -221,6 +223,8 @@ public class RemoteBroadcastService  {
 
                     newPoiArray = value.getJSONArray("poiArray");
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 updateInternalPois(newPoiArray);
@@ -293,6 +297,8 @@ public class RemoteBroadcastService  {
             //out.put("value", msg);
             out.put("value", rsaEncryption.encrypt(msg.toString(), pubKeyReceiver));
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Log.d("RemoteBroadcastService", "Sending message over BT: " + out.toString());
@@ -378,6 +384,8 @@ public class RemoteBroadcastService  {
                 out.put("type", msgType.name());
                 out.put("value", rsaEncryption.encrypt(msg.toString(), pubKeyReceiver));
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             Log.d("RemoteBroadcastService", "Sending message over BT: " + out.toString());
