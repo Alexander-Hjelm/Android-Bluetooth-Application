@@ -16,6 +16,7 @@ import java.security.cert.CertificateFactory;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.security.Signature;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -250,6 +251,26 @@ public class RSAEncryption {
 
 		return new String(decrypted,"UTF-8");
 	}
+
+    public static String sign(String plainText, PrivateKey privateKey) throws Exception {
+        Signature privateSignature = Signature.getInstance("SHA256withRSA");
+        privateSignature.initSign(privateKey);
+        privateSignature.update(plainText.getBytes("UTF-8"));
+
+        byte[] signature = privateSignature.sign();
+
+        return encodeBASE64(signature);
+    }
+
+    public static boolean verify(String plainText, String signature, PublicKey publicKey) throws Exception {
+        Signature publicSignature = Signature.getInstance("SHA256withRSA");
+        publicSignature.initVerify(publicKey);
+        publicSignature.update(plainText.getBytes("UTF-8"));
+
+        byte[] signatureBytes = decodeBASE64(signature);
+
+        return publicSignature.verify(signatureBytes);
+    }
 
 }
 
