@@ -238,6 +238,11 @@ public class RSAEncryption {
 	}
 
 	public String decrypt(String encrypted, PrivateKey privKey) throws Exception{
+		//Remove BOM chars
+        //Log.d("RSAEncryption", "Encrypted string: " + encrypted);
+        encrypted = encrypted.replaceAll("[^a-f0-9]", "");
+        //Log.d("RSAEncryption", "Encrypted string: " + encrypted);
+
 		this.cipher.init(Cipher.DECRYPT_MODE, privKey);
 		byte[] bts = Hex.decodeHex(encrypted.toCharArray());
 
@@ -245,6 +250,7 @@ public class RSAEncryption {
 
 		return new String(decrypted,"UTF-8");
 	}
+
 }
 
 //http://www.pixelstech.net/article/1433764001-Generate-certificate-from-cert-file-in-Java
