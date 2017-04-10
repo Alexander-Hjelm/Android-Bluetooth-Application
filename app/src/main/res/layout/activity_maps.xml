@@ -20,6 +20,7 @@
         android:id="@+id/server_start_button" />
 
     <Button
+        android:visibility="gone"
         android:text="Stop BT sockets server"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
