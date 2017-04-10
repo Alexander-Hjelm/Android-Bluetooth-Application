@@ -263,7 +263,8 @@ public class RSAEncryption {
     }
 
     public static boolean verify(String plainText, String signature, PublicKey publicKey) throws Exception {
-        Signature publicSignature = Signature.getInstance("SHA256withRSA");
+		plainText = plainText.replaceAll("[^a-f0-9]", "");
+		Signature publicSignature = Signature.getInstance("SHA256withRSA");
         publicSignature.initVerify(publicKey);
         publicSignature.update(plainText.getBytes("UTF-8"));
 
