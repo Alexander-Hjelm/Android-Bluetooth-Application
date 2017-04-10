@@ -403,8 +403,15 @@ public class RemoteBroadcastService  {
 
             JSONObject out = new JSONObject();
             try {
+                String value = rsaEncryption.encrypt(msg.toString(), pubKeyReceiver);
+
                 out.put("type", msgType.name());
-                out.put("value", rsaEncryption.encrypt(msg.toString(), pubKeyReceiver));
+                out.put("value", value);
+
+                // Add signature
+                if (msgType == MessageType.POIREQUEST || msgType == MessageType.POIRESPONSE) {
+                    out.put("signature", rsaEncryption.sign(value, rsaEncryption.getPrivKey()));
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
