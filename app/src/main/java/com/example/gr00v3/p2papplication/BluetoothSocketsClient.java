@@ -455,7 +455,11 @@ public class BluetoothSocketsClient {
                     e.printStackTrace();
                 }
 
-                connectedThreadClient.write(str.getBytes());
+                if(connectedThreadClient != null) {
+                    connectedThreadClient.write(str.getBytes());
+                } else {
+                    Toast.makeText(mContext, "No server available", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
