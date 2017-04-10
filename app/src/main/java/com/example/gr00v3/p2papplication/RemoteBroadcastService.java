@@ -185,6 +185,14 @@ public class RemoteBroadcastService  {
                 try {
                     //JSONObject value = MsgJson.getJSONObject("value");
 
+                    //Verify
+                    String valueStr = MsgJson.getString("value");
+                    String signStr = MsgJson.getString("signature");
+                    if (!rsaEncryption.verify(valueStr, signStr, pubKeyReceiver)) {
+                        Log.d("RemoteBroadcastService", "VERIFICATION FAILED");
+                        return;
+                    }
+
                     //Decrypt
                     String msgDecr = rsaEncryption.decrypt(MsgJson.getString("value"), rsaEncryption.getPrivKey());
                     Log.d("Encryption Stuff", "DECR; POIRQUEST: " + msgDecr);
@@ -215,6 +223,14 @@ public class RemoteBroadcastService  {
             case "POIRESPONSE":
                 JSONArray newPoiArray = new JSONArray();
                 try {
+                    //Verify
+                    String valueStr = MsgJson.getString("value");
+                    String signStr = MsgJson.getString("signature");
+                    if (!rsaEncryption.verify(valueStr, signStr, pubKeyReceiver)) {
+                        Log.d("RemoteBroadcastService", "VERIFICATION FAILED");
+                        return;
+                    }
+
                     //Decrypt
                     String msgDecr = rsaEncryption.decrypt(MsgJson.getString("value"), rsaEncryption.getPrivKey());
                     Log.d("Encryption Stuff", "DECR; POIREQUEST: " + msgDecr);
