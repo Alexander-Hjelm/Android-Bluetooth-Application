@@ -292,14 +292,21 @@ public class RemoteBroadcastService  {
 
         JSONObject out = new JSONObject();
         try {
+            String value = rsaEncryption.encrypt(msg.toString(), pubKeyReceiver);
+
             out.put("type", msgType.name());
             //out.put("value", msg);
-            out.put("value", rsaEncryption.encrypt(msg.toString(), pubKeyReceiver));
-        } catch (JSONException e) {
-            e.printStackTrace();
+            out.put("value", value);
+
+            // Add signature
+            if (msgType == MessageType.POIREQUEST || msgType == MessageType.POIRESPONSE) {
+                out.put("signature", rsaEncryption.sign(value, rsaEncryption.getPrivKey()));
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            return;
         }
+
         Log.d("RemoteBroadcastService", "Sending message over BT: " + out.toString());
         bluetoothSocketsClient.write(out.toString(), connType);
     }
