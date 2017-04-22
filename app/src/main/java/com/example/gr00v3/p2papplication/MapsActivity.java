@@ -173,7 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.addMarker(new MarkerOptions()
                 .position(point)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.downvote))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.person))
                 .title("You pressed here"));
     }
 
