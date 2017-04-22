@@ -3,10 +3,14 @@ package com.example.gr00v3.p2papplication;
 import android.os.Environment;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -14,24 +18,33 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
+import java.security.cert.CertPath;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.security.Signature;
+import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.spongycastle.asn1.cms.EnvelopedData;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.spongycastle.util.io.pem.PemObject;
+import org.spongycastle.util.io.pem.PemObjectGenerator;
+import org.spongycastle.util.io.pem.PemWriter;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import static android.R.attr.path;
+import static android.provider.CalendarContract.Instances.BEGIN;
 import static org.apache.commons.codec.binary.Base64.decodeBase64;
 
 public class RSAEncryption {
@@ -40,7 +53,9 @@ public class RSAEncryption {
 	private final String privKeyFileName = "keys/keypair/priv.der";
 	private final String certFileName = "keys/cert/cert.cert.pem";
 	private final String chainCertFileName = "keys/cert/ca-chain.cert.pem";
-	
+
+	private String certStr;
+
 	private PublicKey pubKey;
 	private PrivateKey privKey;
 	private Certificate cert;
@@ -63,7 +78,6 @@ public class RSAEncryption {
 
 //		//Read keys from File to String
 
-		//storageDirectory = internalStorageDirectory;
 		storageDirectory = Environment.getExternalStorageDirectory().getAbsolutePath().concat("/");
 
 		try {
@@ -71,6 +85,13 @@ public class RSAEncryption {
 			pubKey = getPubKeyFromFile(pubKeyFileName);
 		} catch (GeneralSecurityException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		//Read cert to string from file
+		try {
+			certStr = FileUtils.readFileToString(new File(storageDirectory + certFileName));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -100,16 +121,6 @@ public class RSAEncryption {
 	    KeyFactory kf = KeyFactory.getInstance("RSA");
 	    return kf.generatePublic(spec);
 	}
-
-    private PublicKey getPubKeyFromString( String str ) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
-        //byte[] keyBytes = Files.readAllBytes(new File(fileName).toPath());
-        byte keyBytes[] = str.getBytes();
-
-        X509EncodedKeySpec spec =
-                new X509EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        return kf.generatePublic(spec);
-    }
 	
 	private Certificate getCertificateFromFile( String fileName ) {
 		Certificate cert = null;
@@ -123,12 +134,51 @@ public class RSAEncryption {
 		return cert;
 	}
 
-	public static PublicKey buildPublicKeyFromString(String str) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
-		byte[] publicBytes = decodeBASE64(str);
-		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicBytes);
-		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-		PublicKey pubKey = keyFactory.generatePublic(keySpec);
-		return pubKey;
+	private Certificate getCertificateFromString( String certStr ) {
+		Certificate cert = null;
+		try{
+			CertificateFactory cf = CertificateFactory.getInstance("X.509");
+			InputStream is = new ByteArrayInputStream(certStr.getBytes("UTF-8"));
+			cert = cf.generateCertificate(is);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return cert;
+	}
+
+	public boolean verifyCert( String certStr ) {
+		String certStr1 = certStr.substring(0, 965) + certStr.substring(977);
+		Certificate cert = getCertificateFromString(certStr1);
+		if(cert == null) {
+			String certStr2 = certStr.substring(0, 964) + certStr.substring(976);
+			cert = getCertificateFromString(certStr2);
+		}
+
+
+		System.out.println("FECK");
+		return true;
+	}
+
+	public String convertToBase64PEMString(Certificate x509Cert) throws IOException {
+		StringWriter sw = new StringWriter();
+		try (PemWriter pw = new PemWriter(sw)) {
+			pw.writeObject(new PemObject("CERTIFICATE", x509Cert.getEncoded()));
+			pw.flush();
+		} catch (CertificateEncodingException e) {
+			e.printStackTrace();
+		}
+		return sw.toString();
+	}
+
+	public PublicKey getPubKeyFromCert( String certStr ) {
+		String certStr1 = certStr.substring(0, 965) + certStr.substring(977);
+		Certificate cert = getCertificateFromString(certStr1);
+		if(cert == null) {
+			String certStr2 = certStr.substring(0, 964) + certStr.substring(976);
+			cert = getCertificateFromString(certStr2);
+		}
+
+		return cert.getPublicKey();
 	}
 
 	/**
@@ -176,6 +226,14 @@ public class RSAEncryption {
     public PrivateKey getPrivKey() {
         return privKey;
     }
+
+	public String getCertPEM() throws IOException {
+		return convertToBase64PEMString(cert);
+	}
+
+	public String getCertStr() {
+		return certStr;
+	}
 
 	private byte[] blockCipher(byte[] bytes, int mode) throws IllegalBlockSizeException, BadPaddingException {
 		// string initialize 2 buffers.

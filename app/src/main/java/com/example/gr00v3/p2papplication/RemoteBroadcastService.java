@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.cert.CertificateEncodingException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ExecutionException;
 
@@ -250,16 +251,14 @@ public class RemoteBroadcastService  {
                 if ( pubKeyReceiver == null ) {
                     JSONObject keyResponse = new JSONObject();
                     try {
-                        pubKeyReceiver = RSAEncryption.buildPublicKeyFromString(MsgJson.getString("value"));
+                        if (!rsaEncryption.verifyCert(MsgJson.getString("value"))) {
+                            break;
+                        }
+                        pubKeyReceiver = rsaEncryption.getPubKeyFromCert(MsgJson.getString("value"));
                         keyResponse.put("type", MessageType.KEYRESPONSE.name());
-                        keyResponse.put("value", RSAEncryption.getKeyAsString(pubKeyThis));
+                        //keyRequest.put("value", RSAEncryption.getKeyAsString(pubKeyThis));
+                        keyResponse.put("value", rsaEncryption.getCertStr());
                     } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    } catch (InvalidKeySpecException e) {
                         e.printStackTrace();
                     }
                     Log.d("RemoteBroadcastService", "SENDING KEYRESPONSE:" + keyResponse.toString());
@@ -270,13 +269,10 @@ public class RemoteBroadcastService  {
                 //If receivers pubkey is not set, store and do not send anything further
                 if ( pubKeyReceiver == null ) {
                     try {
-                        pubKeyReceiver = RSAEncryption.buildPublicKeyFromString(MsgJson.getString("value"));
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    } catch (InvalidKeySpecException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        if (!rsaEncryption.verifyCert(MsgJson.getString("value"))) {
+                            break;
+                        }
+                        pubKeyReceiver = rsaEncryption.getPubKeyFromCert(MsgJson.getString("value"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -294,7 +290,8 @@ public class RemoteBroadcastService  {
             JSONObject keyRequest = new JSONObject();
             try {
                 keyRequest.put("type", RemoteBroadcastService.MessageType.KEYREQUEST.name());
-                keyRequest.put("value", RSAEncryption.getKeyAsString(pubKeyThis));
+                //keyRequest.put("value", RSAEncryption.getKeyAsString(pubKeyThis));
+                keyRequest.put("value", rsaEncryption.getCertStr());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
