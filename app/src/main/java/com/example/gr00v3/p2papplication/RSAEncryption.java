@@ -2,9 +2,12 @@ package com.example.gr00v3.p2papplication;
 
 import android.os.Environment;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -29,16 +32,19 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import static org.apache.commons.codec.binary.Base64.decodeBase64;
+
 public class RSAEncryption {
 
-	private final String pubKeyFileName = "keys/pub/key.pub";
-	private final String privKeyFileName = "keys/priv/key.pem";
-	private final String certFileName = "keys/cert/cert.crt";
-	private final String pubKeyFileNameDER = "keys/pub_der_format/pub.der";
+	private final String pubKeyFileName = "keys/keypair/pub.der";
+	private final String privKeyFileName = "keys/keypair/priv.der";
+	private final String certFileName = "keys/cert/cert.cert.pem";
+	private final String intermediateCertFileName = "keys/cert/ca-chain.cert.pem";
 	
 	private PublicKey pubKey;
 	private PrivateKey privKey;
 	private Certificate cert;
+	private Certificate chainCert;
 
 	private Cipher cipher;
 
@@ -61,11 +67,9 @@ public class RSAEncryption {
 		storageDirectory = Environment.getExternalStorageDirectory().getAbsolutePath().concat("/");
 
 		try {
-			privKey = getPrivKeyFromFile("keys/priv_pkcs8_format/key_pkcs8.der");
-			pubKey = getPubKeyFromFile("keys/pub_der_format/pub.der");
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
+			privKey = getPrivKeyFromFile(privKeyFileName);
+			pubKey = getPubKeyFromFile(pubKeyFileName);
+		} catch (GeneralSecurityException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -149,7 +153,7 @@ public class RSAEncryption {
 		// BASE64Decoder b64 = new BASE64Decoder();
 		// return b64.decodeBuffer(text);
 		//Log.d("TEG", Base64.class.getProtectionDomain().getCodeSource().getLocation().toString());
-		return Base64.decodeBase64(text.getBytes());
+		return decodeBase64(text.getBytes());
 	}
 
 	/**
