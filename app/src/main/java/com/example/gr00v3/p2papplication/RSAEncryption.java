@@ -39,7 +39,7 @@ public class RSAEncryption {
 	private final String pubKeyFileName = "keys/keypair/pub.der";
 	private final String privKeyFileName = "keys/keypair/priv.der";
 	private final String certFileName = "keys/cert/cert.cert.pem";
-	private final String intermediateCertFileName = "keys/cert/ca-chain.cert.pem";
+	private final String chainCertFileName = "keys/cert/ca-chain.cert.pem";
 	
 	private PublicKey pubKey;
 	private PrivateKey privKey;
@@ -76,6 +76,7 @@ public class RSAEncryption {
 		}
 
 		cert = getCertificateFromFile(certFileName);
+		chainCert = getCertificateFromFile(chainCertFileName);
 
 ////		http://stackoverflow.com/questions/10007147/getting-a-illegalblocksizeexception-data-must-not-be-longer-than-256-bytes-when
 	}
