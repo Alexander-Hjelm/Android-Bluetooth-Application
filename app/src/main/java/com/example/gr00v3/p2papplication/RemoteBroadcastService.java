@@ -165,7 +165,7 @@ public class RemoteBroadcastService  {
     //Handling of incoming messages over BT
     public void handleMessage(String msg) {
         Log.d("RemoteBroadcastService", "Received message over BT: " + msg);
-        Toast.makeText(parentActivity.getApplicationContext(), "RECEIVED MESSAGE: " + msg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(parentActivity.getApplicationContext(), "RECEIVED MESSAGE: " + msg, Toast.LENGTH_LONG).show();
         JSONObject MsgJson = null;
         String type = "";
         try {

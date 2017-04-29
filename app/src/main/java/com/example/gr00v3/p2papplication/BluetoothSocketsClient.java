@@ -151,7 +151,7 @@ public class BluetoothSocketsClient {
                     case SUCCESS_CONNECT:
                         // Do something once we hae successfully connected to a device
 
-                        Toast.makeText(mContext, "Successfully connected to a Bluetooth device", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mContext, "Successfully connected to a Bluetooth device", Toast.LENGTH_SHORT).show();
 
                         //Write to socket
                         //if (D) Log.d(TAG, "Writing to socket");
